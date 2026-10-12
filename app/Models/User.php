@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Models;
@@ -11,9 +10,6 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Kolom yang boleh diisi melalui mass assignment.
-     */
     protected $fillable = [
         'name',
         'email',
@@ -21,17 +17,11 @@ class User extends Authenticatable
         'role',
     ];
 
-    /**
-     * Kolom yang disembunyikan saat data pengguna diserialisasi.
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Konversi tipe data atribut.
-     */
     protected function casts(): array
     {
         return [

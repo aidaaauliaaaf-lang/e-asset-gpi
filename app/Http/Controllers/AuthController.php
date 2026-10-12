@@ -28,12 +28,18 @@ class AuthController extends Controller
                 ->with('error', 'Email atau password salah.');
         }
 
+        if (!in_array($user->role, ['admin', 'pimpinan', 'karyawan'], true)) {
+            return back()
+                ->with('error', 'Role akun tidak dikenali. Hubungi administrator.');
+        }
+
         $request->session()->regenerate();
 
-        session([
+        $request->session()->put([
             'user_id' => $user->id,
             'user_name' => $user->name,
             'user_email' => $user->email,
+            'user_role' => $user->role,
         ]);
 
         return redirect()->route('dashboard');
