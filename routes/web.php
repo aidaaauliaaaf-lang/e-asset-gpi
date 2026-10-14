@@ -3,18 +3,25 @@
 
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetMutationController;
+use App\Http\Controllers\AssetScanController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
-// Halaman utama
+// ==================================================
+// HALAMAN UTAMA
+// ==================================================
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Login
+// ==================================================
+// LOGIN
+// ==================================================
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])
         ->name('login');
@@ -23,55 +30,85 @@ Route::middleware('guest')->group(function () {
         ->name('login.process');
 });
 
-// Logout semua role
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->middleware('role:admin,pimpinan,karyawan')
-    ->name('logout');
+// ==================================================
+// AREA PENGGUNA YANG SUDAH LOGIN
+// ==================================================
 
-// Dashboard bersama untuk semua role
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware('role:admin,pimpinan,karyawan')
-    ->name('dashboard');
+Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 
-// Aset: Admin dan Karyawan boleh melihat
-Route::get('/assets', [AssetController::class, 'index'])
-    ->middleware('role:admin,karyawan')
-    ->name('assets.index');
+    // Logout
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
 
-Route::get('/assets/create', [AssetController::class, 'create'])
-    ->middleware('role:admin,karyawan')
-    ->name('assets.create');
+    // Dashboard bersama untuk semua role
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+});
 
-Route::post('/assets', [AssetController::class, 'store'])
-    ->middleware('role:admin,karyawan')
-    ->name('assets.store');
+// ==================================================
+// DATA ASET
+// Admin dan Karyawan: melihat, menambah aset
+// ==================================================
 
-Route::get('/assets/{asset}', [AssetController::class, 'show'])
-    ->middleware('role:admin,karyawan')
-    ->name('assets.show');
+Route::middleware('role:admin,karyawan')->group(function () {
 
-// Hanya Admin boleh mengedit dan menghapus aset
+    Route::get('/assets', [AssetController::class, 'index'])
+        ->name('assets.index');
+
+    Route::get('/assets/create', [AssetController::class, 'create'])
+        ->name('assets.create');
+
+    Route::post('/assets', [AssetController::class, 'store'])
+        ->name('assets.store');
+
+    Route::get('/assets/{asset}', [AssetController::class, 'show'])
+        ->name('assets.show');
+});
+
+// Hanya Admin: edit dan hapus aset
 Route::middleware('role:admin')->group(function () {
+
     Route::get('/assets/{asset}/edit', [AssetController::class, 'edit'])
         ->name('assets.edit');
 
     Route::put('/assets/{asset}', [AssetController::class, 'update'])
         ->name('assets.update');
 
-    Route::patch('/assets/{asset}', [AssetController::class, 'update.patch']);
+    Route::patch('/assets/{asset}', [AssetController::class, 'update'])
+        ->name('assets.update.patch');
 
     Route::delete('/assets/{asset}', [AssetController::class, 'destroy'])
         ->name('assets.destroy');
 });
 
-// Mutasi aset
-// Admin dan Pimpinan boleh melihat daftar mutasi
-Route::get('/mutations', [AssetMutationController::class, 'index'])
-    ->middleware('role:admin,pimpinan')
-    ->name('mutations.index');
+// ==================================================
+// SCAN QR CODE
+// Admin dan Karyawan
+// ==================================================
 
-// Hanya Admin boleh menambah mutasi
+Route::middleware('role:admin,karyawan')->group(function () {
+
+    Route::get('/asset-scans', [AssetScanController::class, 'index'])
+        ->name('asset-scans.index');
+
+    Route::post('/asset-scans', [AssetScanController::class, 'store'])
+        ->name('asset-scans.store');
+});
+
+// ==================================================
+// MUTASI ASET
+// Admin dan Pimpinan: melihat daftar mutasi
+// ==================================================
+
+Route::middleware('role:admin,pimpinan')->group(function () {
+
+    Route::get('/mutations', [AssetMutationController::class, 'index'])
+        ->name('mutations.index');
+});
+
+// Hanya Admin: menambah mutasi
 Route::middleware('role:admin')->group(function () {
+
     Route::get('/mutations/create', [AssetMutationController::class, 'create'])
         ->name('mutations.create');
 
@@ -79,14 +116,20 @@ Route::middleware('role:admin')->group(function () {
         ->name('mutations.store');
 });
 
-// Maintenance aset
-// Admin dan Pimpinan boleh melihat daftar maintenance
-Route::get('/maintenances', [MaintenanceController::class, 'index'])
-    ->middleware('role:admin,pimpinan')
-    ->name('maintenances.index');
+// ==================================================
+// MAINTENANCE ASET
+// Admin dan Pimpinan: melihat daftar maintenance
+// ==================================================
 
-// Hanya Admin boleh menambah maintenance
+Route::middleware('role:admin,pimpinan')->group(function () {
+
+    Route::get('/maintenances', [MaintenanceController::class, 'index'])
+        ->name('maintenances.index');
+});
+
+// Hanya Admin: menambah maintenance
 Route::middleware('role:admin')->group(function () {
+
     Route::get('/maintenances/create', [MaintenanceController::class, 'create'])
         ->name('maintenances.create');
 
@@ -94,8 +137,13 @@ Route::middleware('role:admin')->group(function () {
         ->name('maintenances.store');
 });
 
-// Manajemen pengguna: hanya Admin
+// ==================================================
+// MANAJEMEN PENGGUNA
+// Hanya Admin
+// ==================================================
+
 Route::middleware('role:admin')->group(function () {
+
     Route::get('/users', [UserManagementController::class, 'index'])
         ->name('users.index');
 

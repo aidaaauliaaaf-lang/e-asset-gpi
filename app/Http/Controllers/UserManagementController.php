@@ -9,10 +9,11 @@ use Illuminate\Validation\Rule;
 
 class UserManagementController extends Controller
 {
+    private const ROLES = ['admin', 'karyawan', 'pimpinan'];
+
     public function index()
     {
         $users = User::latest()->paginate(10);
-
         return view('users.index', compact('users'));
     }
 
@@ -27,7 +28,7 @@ class UserManagementController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', Rule::in(['admin', 'pimpinan', 'user'])],
+            'role' => ['required', Rule::in(self::ROLES)],
         ]);
 
         User::create([
@@ -51,17 +52,17 @@ class UserManagementController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => [
-                'required',
-                'email',
-                'max:255',
+                'required', 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
-            'role' => ['required', Rule::in(['admin', 'pimpinan', 'user'])],
+            'role' => ['required', Rule::in(self::ROLES)],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        if ($user->id === (int) session('user_id')
-            && $validated['role'] !== 'admin') {
+        if (
+            $user->id === (int) $request->session()->get('user_id')
+            && $validated['role'] !== 'admin'
+        ) {
             return back()->withErrors([
                 'role' => 'Anda tidak dapat mengubah role akun sendiri.',
             ])->withInput();

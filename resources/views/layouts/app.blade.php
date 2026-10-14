@@ -16,7 +16,6 @@
             --gpi-red: #D71920;
             --gpi-red-dark: #B51219;
             --gpi-dark: #20252B;
-            --gpi-dark-light: #30363D;
             --gpi-bg: #F2F4F7;
             --gpi-white: #FFFFFF;
             --gpi-text: #20252B;
@@ -41,6 +40,7 @@
             min-height: 100vh;
             position: fixed;
             inset: 0 auto 0 0;
+            overflow-y: auto;
             background: linear-gradient(180deg, #20252B, #15191E);
             color: white;
             z-index: 1000;
@@ -143,7 +143,7 @@
             border-color: var(--gpi-red-dark);
         }
 
-        /* AREA KONTEN */
+        /* KONTEN UTAMA */
         .main-area {
             min-height: 100vh;
             margin-left: 255px;
@@ -189,7 +189,6 @@
             padding: 30px;
         }
 
-        /* KARTU DAN TABEL */
         .content > .container,
         .content > .container-fluid {
             max-width: 100%;
@@ -254,6 +253,7 @@
             color: #187443;
         }
 
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             .sidebar {
                 width: 76px;
@@ -308,6 +308,10 @@
                 padding: 12px 15px;
             }
 
+            .topbar-title {
+                max-width: 60%;
+            }
+
             .content {
                 padding: 15px;
             }
@@ -343,20 +347,29 @@
     <nav class="nav-area">
         <div class="nav-heading">MENU UTAMA</div>
 
+        {{-- Dashboard --}}
         <a class="menu-link {{ $currentRoute === 'dashboard' ? 'active' : '' }}"
            href="{{ route('dashboard') }}">
             <i class="bi bi-grid-1x2-fill"></i>
             <span class="menu-text">Dashboard</span>
         </a>
 
+        {{-- Data Aset dan Scan QR: Admin serta Karyawan --}}
         @if(in_array($role, ['admin', 'karyawan'], true))
             <a class="menu-link {{ str_starts_with($currentRoute, 'assets.') ? 'active' : '' }}"
                href="{{ route('assets.index') }}">
                 <i class="bi bi-box-seam-fill"></i>
                 <span class="menu-text">Data Aset</span>
             </a>
+
+            <a class="menu-link {{ str_starts_with($currentRoute, 'asset-scans.') ? 'active' : '' }}"
+               href="{{ route('asset-scans.index') }}">
+                <i class="bi bi-qr-code-scan"></i>
+                <span class="menu-text">Scan QR Code</span>
+            </a>
         @endif
 
+        {{-- Mutasi dan Maintenance: Admin serta Pimpinan --}}
         @if(in_array($role, ['admin', 'pimpinan'], true))
             <a class="menu-link {{ str_starts_with($currentRoute, 'mutations.') ? 'active' : '' }}"
                href="{{ route('mutations.index') }}">
@@ -371,6 +384,7 @@
             </a>
         @endif
 
+        {{-- Manajemen Pengguna: Admin saja --}}
         @if($role === 'admin')
             <a class="menu-link {{ str_starts_with($currentRoute, 'users.') ? 'active' : '' }}"
                href="{{ route('users.index') }}">

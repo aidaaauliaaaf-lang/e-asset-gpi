@@ -63,146 +63,91 @@
     <div class="card-body p-0">
 
         <div class="table-responsive">
-
-            <table class="table table-bordered table-hover mb-0 align-middle">
-
-                <thead class="table-light">
-                    <tr>
-                        <th width="60">No</th>
-                        <th>Kode Aset</th>
-                        <th>Nama Aset</th>
-                        <th>Kategori</th>
-                        <th>Lokasi</th>
-                        <th>Divisi</th>
-                        <th>Kondisi</th>
-                        <th>Status</th>
-                        <th width="210">Aksi</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    @forelse($assets as $asset)
-
-                        <tr>
-
-                            <td>
-                                {{ $assets->firstItem() + $loop->index }}
-                            </td>
-
-                            <td>
-                                <strong>
-                                    {{ $asset->kode_aset }}
-                                </strong>
-                            </td>
-
-                            <td>
-                                {{ $asset->nama_aset }}
-                            </td>
-
-                            <td>
-                                {{ $asset->kategori }}
-                            </td>
-
-                            <td>
-                                {{ $asset->lokasi ?? '-' }}
-                            </td>
-
-                            <td>
-                                {{ $asset->divisi ?? '-' }}
-                            </td>
-
-                            <td>
-
-                                @if($asset->kondisi === 'Baik')
-                                    <span class="badge bg-success">
-                                        Baik
-                                    </span>
-
-                                @elseif($asset->kondisi === 'Rusak Ringan')
-                                    <span class="badge bg-warning text-dark">
-                                        Rusak Ringan
-                                    </span>
-
-                                @elseif($asset->kondisi === 'Rusak Berat')
-                                    <span class="badge bg-danger">
-                                        Rusak Berat
-                                    </span>
-
-                                @else
-                                    <span class="badge bg-secondary">
-                                        {{ $asset->kondisi }}
-                                    </span>
-                                @endif
-
-                            </td>
-
-                            <td>
-
-                                @if($asset->status === 'Aktif')
-                                    <span class="badge bg-success">
-                                        Aktif
-                                    </span>
-                                @else
-                                    <span class="badge bg-secondary">
-                                        {{ $asset->status }}
-                                    </span>
-                                @endif
-
-                            </td>
-
-                            <td>
-
-                                <a
-                                    href="{{ route('assets.show', $asset) }}"
-                                    class="btn btn-sm btn-info text-white"
-                                >
-                                    Detail
-                                </a>
-
-                                <a
-                                    href="{{ route('assets.edit', $asset) }}"
-                                    class="btn btn-sm btn-warning"
-                                >
-                                    Edit
-                                </a>
-
-                                <form
-                                    action="{{ route('assets.destroy', $asset) }}"
-                                    method="POST"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Yakin ingin menghapus aset ini?')"
-                                >
-
+    <table class="table table-bordered table-hover mb-0 align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>No</th>
+                <th>Foto</th>
+                <th>Kode Aset</th>
+                <th>Nama Aset</th>
+                <th>Tanggal Perolehan</th>
+                <th>Kategori</th>
+                <th>Lokasi</th>
+                <th>Divisi</th>
+                <th>Kondisi</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($assets as $asset)
+                <tr>
+                    <td>{{ $assets->firstItem() + $loop->index }}</td>
+                    <td>
+                        @if($asset->foto)
+                            <img src="{{ asset('storage/' . $asset->foto) }}"
+                                 alt="Foto aset" width="70" height="60"
+                                 style="object-fit:cover;border-radius:6px;">
+                        @else
+                            <span class="text-muted">Belum ada foto</span>
+                        @endif
+                    </td>
+                    <td><strong>{{ $asset->kode_aset }}</strong></td>
+                    <td>{{ $asset->nama_aset }}</td>
+                    <td>
+                        {{ $asset->tanggal_pembelian
+                            ? \Carbon\Carbon::parse($asset->tanggal_pembelian)->format('d-m-Y')
+                            : '-' }}
+                    </td>
+                    <td>{{ $asset->kategori }}</td>
+                    <td>{{ $asset->lokasi ?? '-' }}</td>
+                    <td>{{ $asset->divisi ?? '-' }}</td>
+                    <td>
+                        @if($asset->kondisi === 'Baik')
+                            <span class="badge bg-success">Baik</span>
+                        @elseif($asset->kondisi === 'Rusak Ringan')
+                            <span class="badge bg-warning text-dark">Rusak Ringan</span>
+                        @elseif($asset->kondisi === 'Rusak Berat')
+                            <span class="badge bg-danger">Rusak Berat</span>
+                        @else
+                            <span class="badge bg-secondary">{{ $asset->kondisi }}</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if($asset->status === 'Aktif')
+                            <span class="badge bg-success">Aktif</span>
+                        @else
+                            <span class="badge bg-secondary">{{ $asset->status }}</span>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="d-flex flex-wrap gap-1">
+                            <a href="{{ route('assets.show', $asset) }}"
+                               class="btn btn-sm btn-info text-white">Detail</a>
+                            @if(session('user_role') === 'admin')
+                                <a href="{{ route('assets.edit', $asset) }}"
+                                   class="btn btn-sm btn-warning">Edit</a>
+                                <form action="{{ route('assets.destroy', $asset) }}"
+                                      method="POST"
+                                      onsubmit="return confirm('Yakin ingin menghapus aset ini?')">
                                     @csrf
                                     @method('DELETE')
-
-                                    <button
-                                        type="submit"
-                                        class="btn btn-sm btn-danger"
-                                    >
-                                        Hapus
-                                    </button>
-
+                                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
                                 </form>
-
-                            </td>
-
-                        </tr>
-
-                    @empty
-
-                        <tr>
-                            <td colspan="9" class="text-center py-5 text-muted">
-                                Belum ada data aset.
-                            </td>
-                        </tr>
-
-                    @endforelse
-
-                </tbody>
-
-            </table>
+                            @endif
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="11" class="text-center py-5 text-muted">
+                        Belum ada data aset.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
         </div>
 
