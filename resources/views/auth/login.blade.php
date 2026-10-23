@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -54,7 +55,7 @@
     <div class="login-body">
 
         <h5 class="text-center mb-4">
-            Login Administrator
+            Login
         </h5>
 
         @if(session('error'))
@@ -78,17 +79,18 @@
             @csrf
 
             <div class="mb-3">
-                <label for="email" class="form-label">
-                    Email
+                <label for="user" class="form-label">
+                    Username
                 </label>
 
                 <input
-                    type="email"
-                    name="email"
-                    id="email"
+                    type="text"
+                    name="user"
+                    id="user"
                     class="form-control"
-                    value="{{ old('email') }}"
-                    placeholder="Masukkan email"
+                    value="{{ old('user') }}"
+                    placeholder="Masukkan username"
+                    autocomplete="username"
                     required
                     autofocus
                 >
@@ -105,6 +107,7 @@
                     id="password"
                     class="form-control"
                     placeholder="Masukkan password"
+                    autocomplete="current-password"
                     required
                 >
             </div>
@@ -120,3 +123,4 @@
 
 </body>
 </html>
+```
