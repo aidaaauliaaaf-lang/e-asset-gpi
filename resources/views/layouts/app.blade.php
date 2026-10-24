@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Asset | Golden Piping Indonesia</title>
+    <title>@yield('title', 'E-Asset | Golden Piping Indonesia')</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
@@ -43,19 +43,20 @@
             overflow-y: auto;
             background: linear-gradient(180deg, #20252B, #15191E);
             color: white;
-            z-index: 1000;
+            z-index: 1040;
             box-shadow: 5px 0 25px rgba(32, 37, 43, .08);
         }
 
         .brand {
-            padding: 25px 22px;
+            padding: 22px 20px;
             border-bottom: 1px solid rgba(255,255,255,.12);
         }
 
         .brand-title {
-            font-size: 25px;
+            font-size: 23px;
             font-weight: 800;
             letter-spacing: .3px;
+            color: white;
         }
 
         .brand-icon {
@@ -65,12 +66,12 @@
         .brand-subtitle {
             margin-top: 4px;
             color: #D1D5DB;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .role-label {
             display: inline-block;
-            margin-top: 13px;
+            margin-top: 12px;
             padding: 5px 10px;
             border-radius: 20px;
             background: rgba(215,25,32,.17);
@@ -92,30 +93,76 @@
             letter-spacing: 1.5px;
         }
 
-        .sidebar a.menu-link {
+        .sidebar .menu-link,
+        .sidebar .submenu-toggle {
             display: flex;
             align-items: center;
             gap: 12px;
+            width: 100%;
             margin: 4px 0;
             padding: 12px 14px;
+            border: 0;
             border-radius: 9px;
             color: #E1E4E8;
+            background: transparent;
             text-decoration: none;
+            font-family: inherit;
             font-size: 14px;
+            text-align: left;
             transition: .2s ease;
         }
 
-        .sidebar a.menu-link i {
+        .sidebar .menu-link i,
+        .sidebar .submenu-toggle > i:first-child {
             width: 20px;
             font-size: 17px;
             text-align: center;
+            flex-shrink: 0;
         }
 
-        .sidebar a.menu-link:hover,
-        .sidebar a.menu-link.active {
+        .sidebar .menu-link:hover,
+        .sidebar .menu-link.active,
+        .sidebar .submenu-toggle:hover,
+        .sidebar .submenu-toggle.active {
             color: white;
             background: var(--gpi-red);
             box-shadow: 0 5px 14px rgba(215,25,32,.22);
+        }
+
+        .submenu-toggle {
+            cursor: pointer;
+        }
+
+        .submenu-arrow {
+            margin-left: auto;
+            font-size: 12px !important;
+            transition: transform .2s ease;
+        }
+
+        .submenu-toggle[aria-expanded="true"] .submenu-arrow {
+            transform: rotate(180deg);
+        }
+
+        .submenu {
+            padding: 2px 0 6px 23px;
+        }
+
+        .sidebar .submenu-link {
+            display: block;
+            margin: 3px 0;
+            padding: 10px 12px;
+            border-radius: 7px;
+            color: #D1D5DB;
+            text-decoration: none;
+            font-size: 12px;
+            line-height: 1.45;
+            transition: .2s ease;
+        }
+
+        .sidebar .submenu-link:hover,
+        .sidebar .submenu-link.active {
+            background: rgba(215,25,32,.2);
+            color: white;
         }
 
         .sidebar-divider {
@@ -126,15 +173,15 @@
         .logout-button {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 9px;
+            gap: 10px;
             width: 100%;
-            padding: 11px;
+            padding: 11px 14px;
             border: 1px solid var(--gpi-red);
             border-radius: 9px;
             background: var(--gpi-red);
             color: white;
             font-weight: 600;
+            font-size: 14px;
             transition: .2s;
         }
 
@@ -183,6 +230,8 @@
             background: #FCE7E7;
             color: var(--gpi-red);
             font-size: 17px;
+            overflow: hidden;
+            flex-shrink: 0;
         }
 
         .content {
@@ -254,54 +303,41 @@
         }
 
         /* RESPONSIVE */
+        .mobile-menu-button {
+            display: none;
+        }
+
+        .sidebar-overlay {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
-                width: 76px;
+                width: 255px;
+                transform: translateX(-100%);
+                transition: transform .2s ease;
             }
 
-            .brand {
-                padding: 18px 8px;
-                text-align: center;
+            .sidebar.show {
+                transform: translateX(0);
             }
 
-            .brand-title {
-                font-size: 16px;
-            }
-
-            .brand-subtitle,
-            .role-label,
-            .nav-heading,
-            .menu-text {
-                display: none;
-            }
-
-            .nav-area {
-                padding: 14px 8px;
-            }
-
-            .sidebar a.menu-link {
-                justify-content: center;
-                padding: 13px 5px;
-            }
-
-            .sidebar a.menu-link i {
-                font-size: 20px;
-            }
-
-            .sidebar form {
-                padding: 0 !important;
-            }
-
-            .logout-button {
-                font-size: 0;
-            }
-
-            .logout-button i {
-                font-size: 18px;
+            .sidebar-overlay.show {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,.45);
+                z-index: 1030;
             }
 
             .main-area {
-                margin-left: 76px;
+                margin-left: 0;
+            }
+
+            .mobile-menu-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .topbar {
@@ -309,25 +345,74 @@
             }
 
             .topbar-title {
-                max-width: 60%;
+                display: none;
             }
 
             .content {
                 padding: 15px;
             }
         }
+
+        @media print {
+            .sidebar,
+            .topbar,
+            .sidebar-overlay,
+            .no-print,
+            .btn,
+            form {
+                display: none !important;
+            }
+
+            .main-area {
+                margin-left: 0 !important;
+            }
+
+            .content {
+                padding: 0 !important;
+            }
+
+            body {
+                background: white !important;
+            }
+        }
     </style>
 </head>
 
 <body>
+
 @php
-    $role = session('user_role');
+    $role = strtolower(session('user_role', ''));
+
     $currentRoute = request()->route()
-        ? request()->route()->getName()
+        ? (request()->route()->getName() ?? '')
         : '';
+
+    $isAdmin = $role === 'admin';
+    $isKaryawan = $role === 'karyawan';
+    $isPimpinan = $role === 'pimpinan';
+
+    $canManageAssets = $isAdmin || $isKaryawan;
+    $canViewReports = $isAdmin || $isPimpinan;
+
+    $isReportRoute = request()->is('laporan*')
+        || str_starts_with($currentRoute, 'reports.');
+
+    $isProfileRoute = str_starts_with($currentRoute, 'profile.');
+    $isAssetRoute = str_starts_with($currentRoute, 'assets.');
+    $isScanRoute = str_starts_with($currentRoute, 'asset-scans.');
+    $isMutationRoute = str_starts_with($currentRoute, 'mutations.');
+    $isMaintenanceRoute = str_starts_with($currentRoute, 'maintenances.');
+    $isUserRoute = str_starts_with($currentRoute, 'users.');
+
+    $reportType = request()->query('jenis', 'aset');
 @endphp
 
-<aside class="sidebar">
+<div class="sidebar-overlay" id="sidebarOverlay"
+     onclick="toggleSidebar()"></div>
+
+{{-- SIDEBAR --}}
+<aside class="sidebar" id="sidebar">
+
     <div class="brand">
         <div class="brand-title">
             <i class="bi bi-box-seam-fill brand-icon me-1"></i>
@@ -340,63 +425,150 @@
 
         <span class="role-label">
             <i class="bi bi-shield-check me-1"></i>
-            {{ ucfirst($role ?? 'Tidak diketahui') }}
+            {{ ucfirst($role ?: 'Pengguna') }}
         </span>
     </div>
 
     <nav class="nav-area">
         <div class="nav-heading">MENU UTAMA</div>
 
-        {{-- Dashboard --}}
+        {{-- DASHBOARD --}}
         <a class="menu-link {{ $currentRoute === 'dashboard' ? 'active' : '' }}"
            href="{{ route('dashboard') }}">
-            <i class="bi bi-grid-1x2-fill"></i>
+            <i class="bi bi-house-door-fill"></i>
             <span class="menu-text">Dashboard</span>
         </a>
 
-        {{-- Data Aset dan Scan QR: Admin serta Karyawan --}}
-        @if(in_array($role, ['admin', 'karyawan'], true))
-            <a class="menu-link {{ str_starts_with($currentRoute, 'assets.') ? 'active' : '' }}"
+        {{-- SIDEBAR KHUSUS PIMPINAN --}}
+        @if($isPimpinan)
+
+            <a class="menu-link {{ $isAssetRoute ? 'active' : '' }}"
                href="{{ route('assets.index') }}">
-                <i class="bi bi-box-seam-fill"></i>
+                <i class="bi bi-calendar2-week-fill"></i>
                 <span class="menu-text">Data Aset</span>
             </a>
 
-            <a class="menu-link {{ str_starts_with($currentRoute, 'asset-scans.') ? 'active' : '' }}"
-               href="{{ route('asset-scans.index') }}">
-                <i class="bi bi-qr-code-scan"></i>
-                <span class="menu-text">Scan QR Code</span>
-            </a>
-        @endif
+            {{-- MENU LAPORAN DENGAN SUBMENU --}}
+            <button type="button"
+                    class="submenu-toggle {{ $isReportRoute ? 'active' : '' }}"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#pimpinanReports"
+                    aria-expanded="{{ $isReportRoute ? 'true' : 'false' }}"
+                    aria-controls="pimpinanReports">
+                <i class="bi bi-file-earmark-text-fill"></i>
+                <span class="menu-text flex-grow-1">Laporan</span>
+                <i class="bi bi-chevron-down submenu-arrow"></i>
+            </button>
 
-        {{-- Mutasi dan Maintenance: Admin serta Pimpinan --}}
-        @if(in_array($role, ['admin', 'pimpinan'], true))
-            <a class="menu-link {{ str_starts_with($currentRoute, 'mutations.') ? 'active' : '' }}"
-               href="{{ route('mutations.index') }}">
-                <i class="bi bi-arrow-left-right"></i>
-                <span class="menu-text">Mutasi Aset</span>
+            <div class="collapse {{ $isReportRoute ? 'show' : '' }}"
+                 id="pimpinanReports">
+                <div class="submenu">
+
+                    <a class="submenu-link {{ $isReportRoute && $reportType === 'aset' ? 'active' : '' }}"
+                       href="{{ route('reports.index', ['jenis' => 'aset']) }}">
+                        Laporan Aset
+                    </a>
+
+                    <a class="submenu-link {{ $isReportRoute && $reportType === 'mutasi' ? 'active' : '' }}"
+                       href="{{ route('reports.index', ['jenis' => 'mutasi']) }}">
+                        Laporan Mutasi
+                    </a>
+
+                    <a class="submenu-link {{ $isReportRoute && $reportType === 'pemeliharaan' ? 'active' : '' }}"
+                       href="{{ route('reports.index', ['jenis' => 'pemeliharaan']) }}">
+                        Laporan Pemeliharaan
+                    </a>
+
+                </div>
+            </div>
+
+            {{-- PROFIL PIMPINAN --}}
+            <a class="menu-link mt-2 {{ $isProfileRoute ? 'active' : '' }}"
+               href="{{ route('profile.show') }}">
+                <i class="bi bi-person-fill"></i>
+                <span class="menu-text">Profil</span>
             </a>
 
-            <a class="menu-link {{ str_starts_with($currentRoute, 'maintenances.') ? 'active' : '' }}"
-               href="{{ route('maintenances.index') }}">
-                <i class="bi bi-tools"></i>
-                <span class="menu-text">Maintenance</span>
-            </a>
-        @endif
+        @else
 
-        {{-- Manajemen Pengguna: Admin saja --}}
-        @if($role === 'admin')
-            <a class="menu-link {{ str_starts_with($currentRoute, 'users.') ? 'active' : '' }}"
-               href="{{ route('users.index') }}">
-                <i class="bi bi-people-fill"></i>
-                <span class="menu-text">Manajemen Pengguna</span>
+            {{-- MENU ADMIN DAN KARYAWAN --}}
+            @if($canManageAssets)
+
+                <a class="menu-link {{ $isAssetRoute && !in_array($currentRoute, ['assets.create', 'assets.store'], true) ? 'active' : '' }}"
+                   href="{{ route('assets.index') }}">
+                    <i class="bi bi-box-seam-fill"></i>
+                    <span class="menu-text">Data Aset</span>
+                </a>
+
+                @if(\Illuminate\Support\Facades\Route::has('assets.create'))
+                    <a class="menu-link {{ in_array($currentRoute, ['assets.create', 'assets.store'], true) ? 'active' : '' }}"
+                       href="{{ route('assets.create') }}">
+                        <i class="bi bi-clipboard-plus-fill"></i>
+                        <span class="menu-text">Input Aset</span>
+                    </a>
+                @endif
+
+                @if(\Illuminate\Support\Facades\Route::has('asset-scans.index'))
+                    <a class="menu-link {{ $isScanRoute ? 'active' : '' }}"
+                       href="{{ route('asset-scans.index') }}">
+                        <i class="bi bi-qr-code-scan"></i>
+                        <span class="menu-text">Scan QR Code</span>
+                    </a>
+                @endif
+
+            @endif
+
+            <a class="menu-link {{ $isProfileRoute ? 'active' : '' }}"
+               href="{{ route('profile.show') }}">
+                <i class="bi bi-person-circle"></i>
+                <span class="menu-text">Profil Karyawan</span>
             </a>
+
+            {{-- MENU TAMBAHAN KHUSUS ADMIN --}}
+            @if($isAdmin)
+
+                @if(\Illuminate\Support\Facades\Route::has('mutations.index'))
+                    <a class="menu-link {{ $isMutationRoute ? 'active' : '' }}"
+                       href="{{ route('mutations.index') }}">
+                        <i class="bi bi-arrow-left-right"></i>
+                        <span class="menu-text">Mutasi Aset</span>
+                    </a>
+                @endif
+
+                @if(\Illuminate\Support\Facades\Route::has('maintenances.index'))
+                    <a class="menu-link {{ $isMaintenanceRoute ? 'active' : '' }}"
+                       href="{{ route('maintenances.index') }}">
+                        <i class="bi bi-tools"></i>
+                        <span class="menu-text">Pemeliharaan</span>
+                    </a>
+                @endif
+
+                @if(\Illuminate\Support\Facades\Route::has('reports.index'))
+                    <a class="menu-link {{ $isReportRoute ? 'active' : '' }}"
+                       href="{{ route('reports.index') }}">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                        <span class="menu-text">Laporan</span>
+                    </a>
+                @endif
+
+                @if(\Illuminate\Support\Facades\Route::has('users.index'))
+                    <a class="menu-link {{ $isUserRoute ? 'active' : '' }}"
+                       href="{{ route('users.index') }}">
+                        <i class="bi bi-people-fill"></i>
+                        <span class="menu-text">Manajemen Pengguna</span>
+                    </a>
+                @endif
+
+            @endif
+
         @endif
 
         <hr class="sidebar-divider">
 
+        {{-- LOGOUT --}}
         <form action="{{ route('logout') }}" method="POST" class="px-2">
             @csrf
+
             <button type="submit" class="logout-button">
                 <i class="bi bi-box-arrow-right"></i>
                 <span class="menu-text">Logout</span>
@@ -405,41 +577,88 @@
     </nav>
 </aside>
 
+{{-- KONTEN UTAMA --}}
 <div class="main-area">
+
     <header class="topbar">
-        <div class="topbar-title">
-            <i class="bi bi-building me-1"></i>
-            Sistem Informasi Manajemen Aset Perusahaan
+        <div class="d-flex align-items-center gap-3">
+
+            <button type="button"
+                    class="btn btn-outline-secondary mobile-menu-button"
+                    onclick="toggleSidebar()"
+                    aria-label="Buka menu">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <div class="topbar-title">
+                <i class="bi bi-building me-1"></i>
+                Sistem Informasi Manajemen Aset Perusahaan
+            </div>
         </div>
 
         <div class="topbar-user">
             <div class="user-avatar">
                 <i class="bi bi-person-fill"></i>
             </div>
+
             <span>{{ session('user_name', 'Pengguna') }}</span>
         </div>
     </header>
 
     <main class="content">
+
+        {{-- NOTIFIKASI SUKSES --}}
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div class="alert alert-success alert-dismissible fade show"
+                 role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i>
                 {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Tutup"></button>
             </div>
         @endif
 
+        {{-- NOTIFIKASI ERROR --}}
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show"
+                 role="alert">
                 {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Tutup"></button>
             </div>
         @endif
 
+        {{-- VALIDASI --}}
+        @if($errors->any())
+            <div class="alert alert-danger" role="alert">
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        {{-- ISI HALAMAN --}}
         @yield('content')
+
     </main>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('show');
+        document.getElementById('sidebarOverlay').classList.toggle('show');
+    }
+</script>
+
 </body>
 </html>
