@@ -2,6 +2,7 @@
 <?php
 
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AssetQrController;
 use App\Http\Controllers\AssetMutationController;
 use App\Http\Controllers\AssetScanController;
 use App\Http\Controllers\AuthController;
@@ -76,6 +77,10 @@ Route::middleware('role:admin,karyawan')->group(function () {
 
     Route::get('/assets/{asset}', [AssetController::class, 'show'])
         ->name('assets.show');
+
+    Route::get('/assets/{asset}/qr', [AssetQrController::class, 'show'])
+    ->name('assets.qr');
+
 
 });
 
