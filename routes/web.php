@@ -37,20 +37,17 @@ Route::middleware('guest')->group(function () {
 
 // ==================================================
 // AREA PENGGUNA YANG SUDAH LOGIN
-// Admin, Pimpinan, dan Karyawan
+// ADMIN, PIMPINAN, KARYAWAN
 // ==================================================
 
 Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 
-    // Logout
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
 
-    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    // PROFIL PENGGUNA
     Route::get('/profile', [ProfileController::class, 'show'])
         ->name('profile.show');
 
@@ -61,13 +58,15 @@ Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 
 // ==================================================
 // DATA ASET
-// Admin dan Karyawan
 // ==================================================
 
-Route::middleware('role:admin,karyawan')->group(function () {
+// PENTING:
+// Route assets/create harus berada sebelum assets/{asset}.
 
-    Route::get('/assets', [AssetController::class, 'index'])
-        ->name('assets.index');
+// TAMBAH ASET
+// ADMIN DAN KARYAWAN
+
+Route::middleware('role:admin,karyawan')->group(function () {
 
     Route::get('/assets/create', [AssetController::class, 'create'])
         ->name('assets.create');
@@ -75,19 +74,26 @@ Route::middleware('role:admin,karyawan')->group(function () {
     Route::post('/assets', [AssetController::class, 'store'])
         ->name('assets.store');
 
+});
+
+// MELIHAT DATA ASET
+// ADMIN, PIMPINAN, KARYAWAN
+
+Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
+
+    Route::get('/assets', [AssetController::class, 'index'])
+        ->name('assets.index');
+
+    Route::get('/assets/{asset}/qr', [AssetQrController::class, 'show'])
+        ->name('assets.qr');
+
     Route::get('/assets/{asset}', [AssetController::class, 'show'])
         ->name('assets.show');
 
-    Route::get('/assets/{asset}/qr', [AssetQrController::class, 'show'])
-    ->name('assets.qr');
-
-
 });
 
-// ==================================================
 // EDIT DAN HAPUS ASET
-// Hanya Admin
-// ==================================================
+// HANYA ADMIN
 
 Route::middleware('role:admin')->group(function () {
 
@@ -107,7 +113,7 @@ Route::middleware('role:admin')->group(function () {
 
 // ==================================================
 // SCAN QR CODE
-// Admin dan Karyawan
+// ADMIN DAN KARYAWAN
 // ==================================================
 
 Route::middleware('role:admin,karyawan')->group(function () {
@@ -122,7 +128,7 @@ Route::middleware('role:admin,karyawan')->group(function () {
 
 // ==================================================
 // MUTASI ASET
-// Admin dan Pimpinan: melihat daftar
+// ADMIN DAN PIMPINAN: MELIHAT DATA
 // ==================================================
 
 Route::middleware('role:admin,pimpinan')->group(function () {
@@ -132,7 +138,8 @@ Route::middleware('role:admin,pimpinan')->group(function () {
 
 });
 
-// Hanya Admin: menambah mutasi
+// HANYA ADMIN: MENAMBAH MUTASI
+
 Route::middleware('role:admin')->group(function () {
 
     Route::get('/mutations/create', [AssetMutationController::class, 'create'])
@@ -144,8 +151,8 @@ Route::middleware('role:admin')->group(function () {
 });
 
 // ==================================================
-// PEMELIHARAAN ASET
-// Admin dan Pimpinan: melihat daftar
+// MAINTENANCE ASET
+// ADMIN DAN PIMPINAN: MELIHAT DATA
 // ==================================================
 
 Route::middleware('role:admin,pimpinan')->group(function () {
@@ -155,7 +162,8 @@ Route::middleware('role:admin,pimpinan')->group(function () {
 
 });
 
-// Hanya Admin: menambah pemeliharaan
+// HANYA ADMIN: MENAMBAH MAINTENANCE
+
 Route::middleware('role:admin')->group(function () {
 
     Route::get('/maintenances/create', [MaintenanceController::class, 'create'])
@@ -168,7 +176,7 @@ Route::middleware('role:admin')->group(function () {
 
 // ==================================================
 // LAPORAN E-ASSET
-// Admin dan Pimpinan
+// ADMIN DAN PIMPINAN
 // ==================================================
 
 Route::middleware('role:admin,pimpinan')->group(function () {
@@ -176,11 +184,16 @@ Route::middleware('role:admin,pimpinan')->group(function () {
     Route::get('/laporan', [ReportController::class, 'index'])
         ->name('reports.index');
 
+    // PDF ASET, MUTASI, DAN MAINTENANCE
+    Route::get('/laporan/{jenis}/pdf', [ReportController::class, 'downloadPdf'])
+        ->whereIn('jenis', ['aset', 'mutasi', 'pemeliharaan'])
+        ->name('reports.pdf');
+
 });
 
 // ==================================================
 // MANAJEMEN PENGGUNA
-// Hanya Admin
+// HANYA ADMIN
 // ==================================================
 
 Route::middleware('role:admin')->group(function () {

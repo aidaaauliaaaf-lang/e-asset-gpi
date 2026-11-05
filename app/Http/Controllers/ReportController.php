@@ -6,9 +6,39 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
+    /**
+     * Daftar jenis laporan.
+     */
+    private function reportTypes()
+    {
+        return [
+            'aset' => [
+                'title' => 'Laporan Data Aset',
+                'table' => 'assets',
+                'filename' => 'laporan-data-aset.pdf',
+            ],
+
+            'mutasi' => [
+                'title' => 'Laporan Mutasi Aset',
+                'table' => 'asset_mutations',
+                'filename' => 'laporan-mutasi-aset.pdf',
+            ],
+
+            'pemeliharaan' => [
+                'title' => 'Laporan Maintenance Aset',
+                'table' => 'maintenances',
+                'filename' => 'laporan-maintenance-aset.pdf',
+            ],
+        ];
+    }
+
+    /**
+     * Menampilkan halaman laporan.
+     */
     public function index(Request $request)
     {
         $validated = $request->validate([
@@ -28,21 +58,7 @@ class ReportController extends Controller
         $dari = $validated['dari'] ?? null;
         $sampai = $validated['sampai'] ?? null;
 
-        $reports = [
-            'aset' => [
-                'title' => 'Laporan Data Aset',
-                'table' => 'assets',
-            ],
-            'mutasi' => [
-                'title' => 'Laporan Mutasi Aset',
-                'table' => 'asset_mutations',
-            ],
-            'pemeliharaan' => [
-                'title' => 'Laporan Pemeliharaan',
-                'table' => 'maintenances',
-            ],
-        ];
-
+        $reports = $this->reportTypes();
         $report = $reports[$jenis];
         $table = $report['table'];
 
@@ -78,6 +94,7 @@ class ReportController extends Controller
             $rows = $query->limit(500)->get();
         }
 
+        // Statistik seluruh laporan.
         $statistics = [
             'aset' => Schema::hasTable('assets')
                 ? DB::table('assets')->count()
@@ -103,5 +120,76 @@ class ReportController extends Controller
             'warning',
             'statistics'
         ));
+    }
+
+    /**
+     * Download PDF sesuai jenis laporan.
+     */
+    public function downloadPdf(Request $request, string $jenis)
+    {
+        $validated = $request->validate([
+            'dari' => ['nullable', 'date'],
+            'sampai' => [
+                'nullable',
+                'date',
+                'after_or_equal:dari',
+            ],
+        ]);
+
+        $reports = $this->reportTypes();
+
+        if (!isset($reports[$jenis])) {
+            abort(404, 'Jenis laporan tidak ditemukan.');
+        }
+
+        $report = $reports[$jenis];
+        $table = $report['table'];
+
+        if (!Schema::hasTable($table)) {
+            abort(404, "Tabel {$table} tidak ditemukan.");
+        }
+
+        $dari = $validated['dari'] ?? null;
+        $sampai = $validated['sampai'] ?? null;
+
+        $columns = Schema::getColumnListing($table);
+        $query = DB::table($table);
+
+        if (in_array('created_at', $columns, true)) {
+            if ($dari) {
+                $query->whereDate('created_at', '>=', $dari);
+            }
+
+            if ($sampai) {
+                $query->whereDate('created_at', '<=', $sampai);
+            }
+
+            $query->orderByDesc('created_at');
+        }
+
+        $total = (clone $query)->count();
+        $rows = $query->limit(500)->get();
+
+        $pdf = Pdf::loadView('reports.pdf', [
+            'jenis' => $jenis,
+            'report' => $report,
+            'rows' => $rows,
+            'columns' => $columns,
+            'dari' => $dari,
+            'sampai' => $sampai,
+            'total' => $total,
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        return $pdf->download($report['filename']);
+    }
+
+    /**
+     * Kompatibilitas dengan route PDF aset lama.
+     */
+    public function asetPdf(Request $request)
+    {
+        return $this->downloadPdf($request, 'aset');
     }
 }

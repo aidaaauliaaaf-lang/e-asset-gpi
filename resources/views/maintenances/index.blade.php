@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -11,9 +12,12 @@
         </p>
     </div>
 
-    <a href="{{ route('maintenances.create') }}" class="btn btn-dark">
-        + Tambah Maintenance
-    </a>
+    {{-- Tombol Tambah Maintenance hanya untuk Admin --}}
+    @if(session('user_role') === 'admin')
+        <a href="{{ route('maintenances.create') }}" class="btn btn-dark">
+            + Tambah Maintenance
+        </a>
+    @endif
 
 </div>
 
@@ -36,7 +40,6 @@
             <table class="table table-bordered table-hover mb-0 align-middle">
 
                 <thead class="table-light">
-
                     <tr>
                         <th width="60">No</th>
                         <th>Kode Aset</th>
@@ -47,7 +50,6 @@
                         <th>Status</th>
                         <th>Maintenance Berikutnya</th>
                     </tr>
-
                 </thead>
 
                 <tbody>
@@ -85,27 +87,19 @@
                             </td>
 
                             <td>
-
                                 @if($maintenance->status === 'Selesai')
-
                                     <span class="badge bg-success">
                                         Selesai
                                     </span>
-
                                 @elseif($maintenance->status === 'Proses')
-
                                     <span class="badge bg-warning text-dark">
                                         Proses
                                     </span>
-
                                 @else
-
                                     <span class="badge bg-secondary">
                                         Terjadwal
                                     </span>
-
                                 @endif
-
                             </td>
 
                             <td>
@@ -119,14 +113,9 @@
                     @empty
 
                         <tr>
-
-                            <td colspan="8"
-                                class="text-center text-muted py-5">
-
+                            <td colspan="8" class="text-center text-muted py-5">
                                 Belum ada data maintenance aset.
-
                             </td>
-
                         </tr>
 
                     @endforelse
@@ -142,11 +131,9 @@
 </div>
 
 @if($maintenances->hasPages())
-
     <div class="mt-4">
         {{ $maintenances->links() }}
     </div>
-
 @endif
 
 @endsection
