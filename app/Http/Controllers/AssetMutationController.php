@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class AssetMutationController extends Controller
 {
+<<<<<<< HEAD
     public function index(Request $request)
     {
         $query = AssetMutation::with('asset');
@@ -32,10 +33,26 @@ class AssetMutationController extends Controller
             ->orderByDesc('id')
             ->paginate(10)
             ->withQueryString();
+=======
+    /**
+     * Menampilkan daftar mutasi aset
+     */
+    public function index()
+    {
+        $mutations = AssetMutation::with('asset')
+            ->latest()
+            ->paginate(10);
+>>>>>>> origin/main
 
         return view('mutations.index', compact('mutations'));
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Menampilkan form tambah mutasi
+     */
+>>>>>>> origin/main
     public function create()
     {
         $assets = Asset::orderBy('nama_aset')->get();
@@ -43,10 +60,17 @@ class AssetMutationController extends Controller
         return view('mutations.create', compact('assets'));
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Menyimpan data mutasi
+     */
+>>>>>>> origin/main
     public function store(Request $request)
     {
         $validated = $request->validate([
             'asset_id' => ['required', 'exists:assets,id'],
+<<<<<<< HEAD
             'lokasi_asal' => ['nullable', 'string', 'max:255'],
             'lokasi_tujuan' => ['required', 'string', 'max:255'],
             'divisi_asal' => ['nullable', 'string', 'max:255'],
@@ -61,6 +85,27 @@ class AssetMutationController extends Controller
         AssetMutation::create($validated);
 
         // Perbarui posisi terbaru aset
+=======
+
+            'lokasi_asal' => ['nullable', 'string', 'max:255'],
+            'lokasi_tujuan' => ['required', 'string', 'max:255'],
+
+            'divisi_asal' => ['nullable', 'string', 'max:255'],
+            'divisi_tujuan' => ['required', 'string', 'max:255'],
+
+            'penanggung_jawab_lama' => ['nullable', 'string', 'max:255'],
+            'penanggung_jawab_baru' => ['required', 'string', 'max:255'],
+
+            'tanggal_mutasi' => ['required', 'date'],
+
+            'keterangan' => ['nullable', 'string'],
+        ]);
+
+        // Simpan riwayat mutasi
+        AssetMutation::create($validated);
+
+        // Update posisi terbaru aset
+>>>>>>> origin/main
         $asset = Asset::findOrFail($validated['asset_id']);
 
         $asset->update([
@@ -73,4 +118,8 @@ class AssetMutationController extends Controller
             ->route('mutations.index')
             ->with('success', 'Mutasi aset berhasil dicatat.');
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/main

@@ -60,10 +60,20 @@ Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 // DATA ASET
 // ==================================================
 
+<<<<<<< HEAD
 // TAMBAH ASET
 // HANYA ADMIN
 
 Route::middleware('role:admin')->group(function () {
+=======
+// PENTING:
+// Route assets/create harus berada sebelum assets/{asset}.
+
+// TAMBAH ASET
+// ADMIN DAN KARYAWAN
+
+Route::middleware('role:admin,karyawan')->group(function () {
+>>>>>>> origin/main
 
     Route::get('/assets/create', [AssetController::class, 'create'])
         ->name('assets.create');
@@ -181,6 +191,10 @@ Route::middleware('role:admin,pimpinan')->group(function () {
     Route::get('/laporan', [ReportController::class, 'index'])
         ->name('reports.index');
 
+<<<<<<< HEAD
+=======
+    // PDF ASET, MUTASI, DAN MAINTENANCE
+>>>>>>> origin/main
     Route::get('/laporan/{jenis}/pdf', [ReportController::class, 'downloadPdf'])
         ->whereIn('jenis', ['aset', 'mutasi', 'pemeliharaan'])
         ->name('reports.pdf');

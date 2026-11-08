@@ -10,6 +10,7 @@ class Maintenance extends Model
     protected $table = 'maintenances';
 
     protected $fillable = [
+<<<<<<< HEAD
     'asset_id',
     'tanggal_maintenance',
     'jenis_maintenance',
@@ -19,6 +20,16 @@ class Maintenance extends Model
     'status',
     'tanggal_maintenance_berikutnya',
 ];
+=======
+        'asset_id',
+        'tanggal_maintenance',
+        'jenis_maintenance',
+        'keterangan',
+        'penanggung_jawab',
+        'status',
+        'tanggal_maintenance_berikutnya',
+    ];
+>>>>>>> origin/main
 
     protected $casts = [
         'tanggal_maintenance' => 'date',
