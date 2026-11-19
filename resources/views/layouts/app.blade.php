@@ -474,9 +474,9 @@
                         Laporan Mutasi
                     </a>
 
-                    <a class="submenu-link {{ $isReportRoute && $reportType === 'pemeliharaan' ? 'active' : '' }}"
-                       href="{{ route('reports.index', ['jenis' => 'pemeliharaan']) }}">
-                        Laporan Pemeliharaan
+                    <a class="submenu-link {{ $isReportRoute && $reportType === 'maintenance' ? 'active' : '' }}"
+                       href="{{ route('reports.index', ['jenis' => 'maintenance']) }}">
+                        Laporan Maintenance
                     </a>
 
                 </div>
@@ -500,11 +500,21 @@
                     <span class="menu-text">Data Aset</span>
                 </a>
 
-                @if(\Illuminate\Support\Facades\Route::has('assets.create'))
+                {{-- INPUT ASET KHUSUS ADMIN --}}
+                @if($isAdmin && \Illuminate\Support\Facades\Route::has('assets.create'))
                     <a class="menu-link {{ in_array($currentRoute, ['assets.create', 'assets.store'], true) ? 'active' : '' }}"
                        href="{{ route('assets.create') }}">
                         <i class="bi bi-clipboard-plus-fill"></i>
                         <span class="menu-text">Input Aset</span>
+                    </a>
+                @endif
+
+                {{-- INPUT MAINTENANCE KHUSUS KARYAWAN --}}
+                @if($isKaryawan && \Illuminate\Support\Facades\Route::has('maintenances.create'))
+                    <a class="menu-link {{ in_array($currentRoute, ['maintenances.create', 'maintenances.store'], true) ? 'active' : '' }}"
+                       href="{{ route('maintenances.create') }}">
+                        <i class="bi bi-tools"></i>
+                        <span class="menu-text">Input Maintenance</span>
                     </a>
                 @endif
 
@@ -539,7 +549,7 @@
                     <a class="menu-link {{ $isMaintenanceRoute ? 'active' : '' }}"
                        href="{{ route('maintenances.index') }}">
                         <i class="bi bi-tools"></i>
-                        <span class="menu-text">Pemeliharaan</span>
+                        <span class="menu-text">Maintenance</span>
                     </a>
                 @endif
 

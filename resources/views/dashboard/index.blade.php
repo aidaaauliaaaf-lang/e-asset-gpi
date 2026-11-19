@@ -41,40 +41,6 @@
         color: #172554;
     }
 
-    .pimpinan-dashboard .notification-menu {
-        position: relative;
-    }
-
-    .pimpinan-dashboard .notification-menu summary {
-        cursor: pointer;
-        list-style: none;
-    }
-
-    .pimpinan-dashboard .notification-menu summary::-webkit-details-marker {
-        display: none;
-    }
-
-    .pimpinan-dashboard .notification-content {
-        position: absolute;
-        right: 0;
-        top: 45px;
-        width: 320px;
-        max-width: 85vw;
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0,0,0,.12);
-        z-index: 1000;
-    }
-
-    .pimpinan-dashboard .notification-item {
-        padding: 12px 15px;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-    .pimpinan-dashboard .notification-item:last-child {
-        border-bottom: 0;
-    }
 </style>
 
 <div class="pimpinan-dashboard">
@@ -88,55 +54,6 @@
             </p>
             <span class="badge bg-primary mt-2">Pimpinan</span>
         </div>
-
-        {{-- NOTIFIKASI --}}
-        <details class="notification-menu">
-            <summary class="btn btn-light border position-relative">
-                <span style="font-size:20px;">🔔</span>
-                @if($notifications->count() > 0)
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{ $notifications->count() }}
-                    </span>
-                @endif
-            </summary>
-
-            <div class="notification-content">
-                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
-                    <strong>Notifikasi</strong>
-                    <span class="badge bg-primary">
-                        {{ $notifications->count() }}
-                    </span>
-                </div>
-
-                @forelse($notifications as $notification)
-                    <div class="notification-item">
-                        <div class="fw-semibold">
-                            @if($notification['jenis'] === 'rusak')
-                                <span class="text-danger">●</span>
-                            @elseif($notification['jenis'] === 'mutasi')
-                                <span class="text-primary">●</span>
-                            @else
-                                <span class="text-warning">●</span>
-                            @endif
-
-                            {{ $notification['judul'] }}
-                        </div>
-
-                        <div class="small text-muted">
-                            {{ $notification['pesan'] }}
-                        </div>
-
-                        <div class="small text-secondary mt-1">
-                            {{ optional($notification['tanggal'])->format('d-m-Y') ?? '-' }}
-                        </div>
-                    </div>
-                @empty
-                    <div class="text-center text-muted p-4">
-                        Belum ada notifikasi.
-                    </div>
-                @endforelse
-            </div>
-        </details>
     </div>
 
     {{-- KARTU RINGKASAN --}}
@@ -424,17 +341,36 @@
 
 <div class="row g-3 mb-4">
 
-    @if(in_array($role, ['admin', 'karyawan'], true))
-        <div class="col-md-4">
-            <a href="{{ route('assets.create') }}"
-               class="card shadow-sm border-0 text-decoration-none h-100">
-                <div class="card-body">
-                    <h5 class="fw-bold text-dark">Input Aset</h5>
-                    <p class="text-muted mb-0">Tambahkan data aset baru.</p>
-                </div>
-            </a>
-        </div>
-    @endif
+{{-- INPUT ASET: HANYA ADMIN --}}
+@if($role === 'admin')
+    <div class="col-md-4">
+        <a href="{{ route('assets.create') }}"
+           class="card shadow-sm border-0 text-decoration-none h-100">
+            <div class="card-body">
+                <h5 class="fw-bold text-dark">Input Aset</h5>
+                <p class="text-muted mb-0">
+                    Tambahkan data aset baru.
+                </p>
+            </div>
+        </a>
+    </div>
+@endif
+
+{{-- INPUT MAINTENANCE: ADMIN DAN KARYAWAN --}}
+@if(in_array($role, ['admin', 'karyawan'], true))
+    <div class="col-md-4">
+        <a href="{{ route('maintenances.create') }}"
+           class="card shadow-sm border-0 text-decoration-none h-100">
+            <div class="card-body">
+                <h5 class="fw-bold text-dark">Input Maintenance</h5>
+                <p class="text-muted mb-0">
+                    Tambahkan data maintenance aset.
+                </p>
+            </div>
+        </a>
+    </div>
+@endif
+
 
     @if(in_array($role, ['admin', 'pimpinan'], true))
         <div class="col-md-4">
@@ -452,7 +388,7 @@
                class="card shadow-sm border-0 text-decoration-none h-100">
                 <div class="card-body">
                     <h5 class="fw-bold text-dark">Laporan Maintenance</h5>
-                    <p class="text-muted mb-0">Lihat informasi pemeliharaan aset.</p>
+                    <p class="text-muted mb-0">Lihat informasi Maintenance aset.</p>
                 </div>
             </a>
         </div>

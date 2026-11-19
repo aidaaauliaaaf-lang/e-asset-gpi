@@ -60,13 +60,10 @@ Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 // DATA ASET
 // ==================================================
 
-// PENTING:
-// Route assets/create harus berada sebelum assets/{asset}.
-
 // TAMBAH ASET
-// ADMIN DAN KARYAWAN
+// HANYA ADMIN
 
-Route::middleware('role:admin,karyawan')->group(function () {
+Route::middleware('role:admin')->group(function () {
 
     Route::get('/assets/create', [AssetController::class, 'create'])
         ->name('assets.create');
@@ -152,19 +149,20 @@ Route::middleware('role:admin')->group(function () {
 
 // ==================================================
 // MAINTENANCE ASET
-// ADMIN DAN PIMPINAN: MELIHAT DATA
+// ADMIN, PIMPINAN, KARYAWAN: MELIHAT DATA
 // ==================================================
 
-Route::middleware('role:admin,pimpinan')->group(function () {
+Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 
     Route::get('/maintenances', [MaintenanceController::class, 'index'])
         ->name('maintenances.index');
 
 });
 
-// HANYA ADMIN: MENAMBAH MAINTENANCE
+// INPUT MAINTENANCE
+// ADMIN DAN KARYAWAN
 
-Route::middleware('role:admin')->group(function () {
+Route::middleware('role:admin,karyawan')->group(function () {
 
     Route::get('/maintenances/create', [MaintenanceController::class, 'create'])
         ->name('maintenances.create');
@@ -184,7 +182,6 @@ Route::middleware('role:admin,pimpinan')->group(function () {
     Route::get('/laporan', [ReportController::class, 'index'])
         ->name('reports.index');
 
-    // PDF ASET, MUTASI, DAN MAINTENANCE
     Route::get('/laporan/{jenis}/pdf', [ReportController::class, 'downloadPdf'])
         ->whereIn('jenis', ['aset', 'mutasi', 'pemeliharaan'])
         ->name('reports.pdf');
