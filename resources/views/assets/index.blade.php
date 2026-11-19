@@ -1,8 +1,9 @@
+
 @extends('layouts.app')
 
 @section('content')
 
-{{-- Header halaman --}}
+{{-- HEADER HALAMAN --}}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="fw-bold mb-1">Data Aset</h2>
@@ -11,15 +12,15 @@
         </p>
     </div>
 
-    {{-- Tombol tambah hanya untuk Admin dan Karyawan --}}
-    @if(in_array(session('user_role'), ['admin', 'karyawan']))
+    {{-- TOMBOL TAMBAH HANYA UNTUK ADMIN --}}
+    @if(strtolower(session('user_role', '')) === 'admin')
         <a href="{{ route('assets.create') }}" class="btn btn-dark">
             + Tambah Aset
         </a>
     @endif
 </div>
 
-{{-- Pesan sukses --}}
+{{-- PESAN SUKSES --}}
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}
@@ -28,7 +29,7 @@
     </div>
 @endif
 
-{{-- Pesan error --}}
+{{-- PESAN ERROR --}}
 @if(session('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {{ session('error') }}
@@ -37,7 +38,7 @@
     </div>
 @endif
 
-{{-- Pencarian --}}
+{{-- PENCARIAN --}}
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-body">
         <form action="{{ route('assets.index') }}" method="GET">
@@ -62,7 +63,7 @@
     </div>
 </div>
 
-{{-- Tabel aset --}}
+{{-- TABEL ASET --}}
 <div class="card shadow-sm border-0">
     <div class="card-header bg-dark text-white">
         <strong>Daftar Aset</strong>
@@ -91,12 +92,12 @@
                 <tbody>
                     @forelse($assets as $asset)
                         <tr>
-                            {{-- Nomor --}}
+                            {{-- NOMOR --}}
                             <td>
                                 {{ $assets->firstItem() + $loop->index }}
                             </td>
 
-                            {{-- Foto --}}
+                            {{-- FOTO --}}
                             <td>
                                 @if($asset->foto)
                                     <img
@@ -113,31 +114,31 @@
                                 @endif
                             </td>
 
-                            {{-- Kode aset --}}
+                            {{-- KODE ASET --}}
                             <td>
                                 <strong>{{ $asset->kode_aset }}</strong>
                             </td>
 
-                            {{-- Nama aset --}}
+                            {{-- NAMA ASET --}}
                             <td>{{ $asset->nama_aset }}</td>
 
-                            {{-- Tanggal perolehan --}}
+                            {{-- TANGGAL PEROLEHAN --}}
                             <td>
                                 {{ $asset->tanggal_pembelian
                                     ? \Carbon\Carbon::parse($asset->tanggal_pembelian)->format('d-m-Y')
                                     : '-' }}
                             </td>
 
-                            {{-- Kategori --}}
+                            {{-- KATEGORI --}}
                             <td>{{ $asset->kategori }}</td>
 
-                            {{-- Lokasi --}}
+                            {{-- LOKASI --}}
                             <td>{{ $asset->lokasi ?? '-' }}</td>
 
-                            {{-- Divisi --}}
+                            {{-- DIVISI --}}
                             <td>{{ $asset->divisi ?? '-' }}</td>
 
-                            {{-- Kondisi --}}
+                            {{-- KONDISI --}}
                             <td>
                                 @if($asset->kondisi === 'Baik')
                                     <span class="badge bg-success">
@@ -158,7 +159,7 @@
                                 @endif
                             </td>
 
-                            {{-- Status --}}
+                            {{-- STATUS --}}
                             <td>
                                 @if($asset->status === 'Aktif')
                                     <span class="badge bg-success">
@@ -171,11 +172,11 @@
                                 @endif
                             </td>
 
-                            {{-- Aksi --}}
+                            {{-- AKSI --}}
                             <td>
                                 <div class="d-flex flex-wrap gap-1">
 
-                                    {{-- Detail dapat diakses semua role --}}
+                                    {{-- DETAIL UNTUK SEMUA ROLE --}}
                                     <a
                                         href="{{ route('assets.show', $asset) }}"
                                         class="btn btn-sm btn-info text-white"
@@ -183,8 +184,8 @@
                                         Detail
                                     </a>
 
-                                    {{-- Edit dan Hapus hanya Admin --}}
-                                    @if(session('user_role') === 'admin')
+                                    {{-- EDIT DAN HAPUS HANYA ADMIN --}}
+                                    @if(strtolower(session('user_role', '')) === 'admin')
 
                                         <a
                                             href="{{ route('assets.edit', $asset) }}"
@@ -229,7 +230,7 @@
     </div>
 </div>
 
-{{-- Pagination --}}
+{{-- PAGINATION --}}
 @if($assets->hasPages())
     <div class="mt-4">
         {{ $assets->links() }}

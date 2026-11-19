@@ -1,4 +1,3 @@
-
 <?php
 
 use App\Http\Controllers\AssetController;
@@ -60,8 +59,7 @@ Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 // DATA ASET
 // ==================================================
 
-// TAMBAH ASET
-// HANYA ADMIN
+// TAMBAH ASET - HANYA ADMIN
 
 Route::middleware('role:admin')->group(function () {
 
@@ -89,8 +87,7 @@ Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 
 });
 
-// EDIT DAN HAPUS ASET
-// HANYA ADMIN
+// EDIT DAN HAPUS ASET - HANYA ADMIN
 
 Route::middleware('role:admin')->group(function () {
 
@@ -181,6 +178,8 @@ Route::middleware('role:admin,pimpinan')->group(function () {
 
     Route::get('/laporan', [ReportController::class, 'index'])
         ->name('reports.index');
+
+    // PDF ASET, MUTASI, DAN MAINTENANCE
 
     Route::get('/laporan/{jenis}/pdf', [ReportController::class, 'downloadPdf'])
         ->whereIn('jenis', ['aset', 'mutasi', 'pemeliharaan'])

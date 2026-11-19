@@ -500,7 +500,7 @@
                     <span class="menu-text">Data Aset</span>
                 </a>
 
-                {{-- INPUT ASET KHUSUS ADMIN --}}
+                {{-- INPUT ASET HANYA UNTUK ADMIN --}}
                 @if($isAdmin && \Illuminate\Support\Facades\Route::has('assets.create'))
                     <a class="menu-link {{ in_array($currentRoute, ['assets.create', 'assets.store'], true) ? 'active' : '' }}"
                        href="{{ route('assets.create') }}">
@@ -669,6 +669,9 @@
         document.getElementById('sidebarOverlay').classList.toggle('show');
     }
 </script>
+
+{{-- MEMANGGIL JAVASCRIPT DARI SETIAP HALAMAN --}}
+@stack('scripts')
 
 </body>
 </html>

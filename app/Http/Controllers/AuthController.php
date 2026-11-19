@@ -20,26 +20,35 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $user = User::where('user', $credentials['user'])->first();
+        // Cari akun berdasarkan kolom user
+        $user = User::where('user', trim($credentials['user']))->first();
 
+        // Periksa username dan password
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return back()
-                ->withInput()
+                ->withInput($request->only('user'))
                 ->with('error', 'Username atau password salah.');
         }
 
-        if (!in_array($user->role, ['admin', 'pimpinan', 'karyawan'], true)) {
-            return back()
-                ->with('error', 'Role akun tidak dikenali. Hubungi administrator.');
+        // Periksa role
+        $role = strtolower(trim($user->role));
+
+        if (!in_array($role, ['admin', 'pimpinan', 'karyawan'], true)) {
+            return back()->with(
+                'error',
+                'Role akun tidak dikenali. Hubungi administrator.'
+            );
         }
 
+        // Regenerasi session
         $request->session()->regenerate();
 
+        // Simpan session pengguna
         $request->session()->put([
             'user_id' => $user->id,
             'user_name' => $user->name,
-            'user_email' => $user->email,
-            'user_role' => $user->role,
+            'user_email' => null,
+            'user_role' => $role,
         ]);
 
         return redirect()->route('dashboard');

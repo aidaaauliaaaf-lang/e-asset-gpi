@@ -11,11 +11,30 @@ class AssetMutationController extends Controller
     /**
      * Menampilkan daftar mutasi aset
      */
-    public function index()
+    public function index(Request $request)
     {
-        $mutations = AssetMutation::with('asset')
-            ->latest()
-            ->paginate(10);
+        $query = AssetMutation::with('asset');
+
+        // Pencarian kode dan nama aset
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->whereHas('asset', function ($q) use ($search) {
+                $q->where('kode_aset', 'like', '%' . $search . '%')
+                    ->orWhere('nama_aset', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Filter tanggal mutasi
+        if ($request->filled('tanggal')) {
+            $query->whereDate('tanggal_mutasi', $request->tanggal);
+        }
+
+        $mutations = $query
+            ->orderByDesc('tanggal_mutasi')
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString();
 
         return view('mutations.index', compact('mutations'));
     }
@@ -37,25 +56,20 @@ class AssetMutationController extends Controller
     {
         $validated = $request->validate([
             'asset_id' => ['required', 'exists:assets,id'],
-
             'lokasi_asal' => ['nullable', 'string', 'max:255'],
             'lokasi_tujuan' => ['required', 'string', 'max:255'],
-
             'divisi_asal' => ['nullable', 'string', 'max:255'],
             'divisi_tujuan' => ['required', 'string', 'max:255'],
-
             'penanggung_jawab_lama' => ['nullable', 'string', 'max:255'],
             'penanggung_jawab_baru' => ['required', 'string', 'max:255'],
-
             'tanggal_mutasi' => ['required', 'date'],
-
             'keterangan' => ['nullable', 'string'],
         ]);
 
-        // Simpan riwayat mutasi
+        // Simpan riwayat mutasi baru
         AssetMutation::create($validated);
 
-        // Update posisi terbaru aset
+        // Perbarui posisi terbaru aset
         $asset = Asset::findOrFail($validated['asset_id']);
 
         $asset->update([

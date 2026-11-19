@@ -14,6 +14,7 @@ class Maintenance extends Model
         'tanggal_maintenance',
         'jenis_maintenance',
         'keterangan',
+        'dokumen',
         'penanggung_jawab',
         'status',
         'tanggal_maintenance_berikutnya',

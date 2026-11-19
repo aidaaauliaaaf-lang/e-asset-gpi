@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -34,11 +33,14 @@
         'penanggung_jawab_baru' => 'Penanggung Jawab Baru',
         'tanggal_mutasi' => 'Tanggal Mutasi',
 
+        'tanggal_maintenance' => 'Tanggal Maintenance',
         'tanggal_pemeliharaan' => 'Tanggal Maintenance',
+        'jenis_maintenance' => 'Jenis Maintenance',
         'jenis_pemeliharaan' => 'Jenis Maintenance',
-        'deskripsi' => 'Deskripsi',
-        'biaya' => 'Biaya',
         'keterangan' => 'Keterangan',
+        'dokumen' => 'Dokumentasi',
+        'penanggung_jawab' => 'Penanggung Jawab',
+        'tanggal_maintenance_berikutnya' => 'Tanggal Maintenance Berikutnya',
     ];
 
     $statisticLabels = [
@@ -55,43 +57,31 @@
 
 {{-- HEADER --}}
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-
     <div>
-        <h2 class="fw-bold mb-1">
-            {{ $pageTitle }}
-        </h2>
-
+        <h2 class="fw-bold mb-1">{{ $pageTitle }}</h2>
         <p class="text-muted mb-0">
             Sistem Informasi E-Asset PT Golden Piping Indonesia
         </p>
     </div>
 
-    {{-- DOWNLOAD PDF --}}
     @if(!$warning)
         <a href="{{ route('reports.pdf', [
             'jenis' => $jenis,
             'dari' => $dari,
             'sampai' => $sampai
         ]) }}" class="btn btn-danger">
-
             <i class="bi bi-file-earmark-pdf"></i>
             Download PDF
-
         </a>
     @endif
-
 </div>
 
 {{-- STATISTIK --}}
 <div class="row g-3 mb-4">
-
     <div class="col-md-4">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
-                <p class="text-muted mb-2">
-                    {{ $statisticLabel }}
-                </p>
-
+                <p class="text-muted mb-2">{{ $statisticLabel }}</p>
                 <h3 class="fw-bold mb-0">
                     {{ number_format($statisticTotal, 0, ',', '.') }}
                 </h3>
@@ -103,7 +93,6 @@
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <p class="text-muted mb-2">Data Ditampilkan</p>
-
                 <h3 class="fw-bold mb-0">
                     {{ number_format($rows->count(), 0, ',', '.') }}
                 </h3>
@@ -115,77 +104,58 @@
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <p class="text-muted mb-2">Total Hasil Filter</p>
-
                 <h3 class="fw-bold mb-0">
                     {{ number_format($total, 0, ',', '.') }}
                 </h3>
             </div>
         </div>
     </div>
-
 </div>
 
 {{-- PILIH JENIS LAPORAN --}}
 <div class="card shadow-sm border-0 mb-4">
-
     <div class="card-header bg-dark text-white">
         <strong>Pilih Jenis Laporan</strong>
     </div>
 
     <div class="card-body">
-
         <div class="d-flex flex-wrap gap-2">
 
             <a href="{{ route('reports.index', ['jenis' => 'aset']) }}"
                class="btn {{ $jenis === 'aset' ? 'btn-primary' : 'btn-outline-primary' }}">
-
                 <i class="bi bi-box-seam"></i>
                 Laporan Aset
-
             </a>
 
             <a href="{{ route('reports.index', ['jenis' => 'mutasi']) }}"
                class="btn {{ $jenis === 'mutasi' ? 'btn-primary' : 'btn-outline-primary' }}">
-
                 <i class="bi bi-arrow-left-right"></i>
                 Laporan Mutasi
-
             </a>
 
             <a href="{{ route('reports.index', ['jenis' => 'pemeliharaan']) }}"
                class="btn {{ $jenis === 'pemeliharaan' ? 'btn-primary' : 'btn-outline-primary' }}">
-
                 <i class="bi bi-tools"></i>
                 Laporan Maintenance
-
             </a>
 
         </div>
-
     </div>
-
 </div>
 
 {{-- FILTER LAPORAN --}}
 <div class="card shadow-sm border-0 mb-4">
-
     <div class="card-header bg-dark text-white">
         <strong>Filter {{ $pageTitle }}</strong>
     </div>
 
     <div class="card-body">
-
         <form action="{{ route('reports.index') }}" method="GET">
-
             <input type="hidden" name="jenis" value="{{ $jenis }}">
 
             <div class="row g-3 align-items-end">
-
                 <div class="col-md-5">
-                    <label class="form-label fw-semibold">
-                        Dari Tanggal
-                    </label>
-
+                    <label class="form-label fw-semibold">Dari Tanggal</label>
                     <input
                         type="date"
                         name="dari"
@@ -195,10 +165,7 @@
                 </div>
 
                 <div class="col-md-5">
-                    <label class="form-label fw-semibold">
-                        Sampai Tanggal
-                    </label>
-
+                    <label class="form-label fw-semibold">Sampai Tanggal</label>
                     <input
                         type="date"
                         name="sampai"
@@ -213,7 +180,6 @@
                         Filter
                     </button>
                 </div>
-
             </div>
 
             <div class="mt-3">
@@ -225,11 +191,8 @@
                     Reset Filter
                 </a>
             </div>
-
         </form>
-
     </div>
-
 </div>
 
 {{-- PERINGATAN --}}
@@ -242,19 +205,15 @@
 
 {{-- TABEL LAPORAN --}}
 <div class="card shadow-sm border-0">
-
     <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-
         <strong>{{ $pageTitle }}</strong>
 
         <span class="badge bg-light text-dark">
             {{ number_format($total, 0, ',', '.') }} Data
         </span>
-
     </div>
 
     <div class="card-body p-0">
-
         <div class="table-responsive">
 
             <table class="table table-bordered table-hover align-middle mb-0">
@@ -272,11 +231,9 @@
                 </thead>
 
                 <tbody>
-
                     @forelse($rows as $index => $row)
 
                         <tr>
-
                             <td class="text-center">
                                 {{ $index + 1 }}
                             </td>
@@ -290,15 +247,80 @@
                                 <td>
 
                                     {{-- FOTO ASET --}}
-                                    @if($column === 'foto' && $value)
+                                    @if($jenis === 'aset' && $column === 'foto')
 
-                                        <img
-                                            src="{{ asset('storage/' . $value) }}"
-                                            alt="Foto aset"
-                                            width="65"
-                                            height="55"
-                                            style="object-fit: cover; border-radius: 6px;"
-                                        >
+                                        @if($value)
+                                            @php
+                                                $fotoUrl = asset(
+                                                    'storage/' . ltrim($value, '/')
+                                                );
+                                            @endphp
+
+                                            <a href="{{ $fotoUrl }}" target="_blank">
+                                                <img
+                                                    src="{{ $fotoUrl }}"
+                                                    alt="Foto Aset"
+                                                    style="
+                                                        width: 100px;
+                                                        height: 75px;
+                                                        object-fit: cover;
+                                                        border-radius: 6px;
+                                                        border: 1px solid #ddd;
+                                                    "
+                                                >
+                                            </a>
+                                        @else
+                                            <span class="text-muted">
+                                                Tidak ada foto
+                                            </span>
+                                        @endif
+
+                                    {{-- FOTO DOKUMENTASI MAINTENANCE --}}
+                                    @elseif($jenis === 'pemeliharaan' && $column === 'dokumen')
+
+                                        @if($value)
+                                            @php
+                                                $extension = strtolower(
+                                                    pathinfo($value, PATHINFO_EXTENSION)
+                                                );
+
+                                                $documentUrl = asset(
+                                                    'storage/' . ltrim($value, '/')
+                                                );
+                                            @endphp
+
+                                            @if(in_array($extension, ['jpg', 'jpeg', 'png', 'webp']))
+                                                <a href="{{ $documentUrl }}" target="_blank">
+                                                    <img
+                                                        src="{{ $documentUrl }}"
+                                                        alt="Dokumentasi Maintenance"
+                                                        style="
+                                                            width: 100px;
+                                                            height: 75px;
+                                                            object-fit: cover;
+                                                            border-radius: 6px;
+                                                            border: 1px solid #ddd;
+                                                        "
+                                                    >
+                                                </a>
+
+                                            @elseif($extension === 'pdf')
+                                                <a
+                                                    href="{{ $documentUrl }}"
+                                                    target="_blank"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                >
+                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                    Lihat PDF
+                                                </a>
+                                            @else
+                                                -
+                                            @endif
+                                        @else
+                                            <span class="text-muted">
+                                                Tidak ada dokumen
+                                            </span>
+                                        @endif
 
                                     {{-- KONDISI --}}
                                     @elseif($column === 'kondisi')
@@ -307,10 +329,14 @@
                                             <span class="badge bg-success">Baik</span>
 
                                         @elseif($value === 'Rusak Ringan')
-                                            <span class="badge bg-warning text-dark">Rusak Ringan</span>
+                                            <span class="badge bg-warning text-dark">
+                                                Rusak Ringan
+                                            </span>
 
                                         @elseif($value === 'Rusak Berat')
-                                            <span class="badge bg-danger">Rusak Berat</span>
+                                            <span class="badge bg-danger">
+                                                Rusak Berat
+                                            </span>
 
                                         @else
                                             <span class="badge bg-secondary">
@@ -323,6 +349,12 @@
 
                                         @if($value === 'Aktif')
                                             <span class="badge bg-success">Aktif</span>
+                                        @elseif($value === 'Selesai')
+                                            <span class="badge bg-success">Selesai</span>
+                                        @elseif($value === 'Proses')
+                                            <span class="badge bg-warning text-dark">Proses</span>
+                                        @elseif($value === 'Terjadwal')
+                                            <span class="badge bg-info text-dark">Terjadwal</span>
                                         @else
                                             <span class="badge bg-secondary">
                                                 {{ $value ?? '-' }}
@@ -352,7 +384,6 @@
                                 </td>
 
                             @endforeach
-
                         </tr>
 
                     @empty
@@ -371,13 +402,11 @@
                         </tr>
 
                     @endforelse
-
                 </tbody>
 
             </table>
 
         </div>
-
     </div>
 
     <div class="card-footer bg-white">
@@ -386,7 +415,6 @@
             Maksimal 500 data ditampilkan.
         </small>
     </div>
-
 </div>
 
 @endsection
