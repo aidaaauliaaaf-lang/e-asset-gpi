@@ -31,7 +31,8 @@ class AssetScanController extends Controller
             ->first();
 
         if (!$asset) {
-            return redirect()->route('asset-scans.index')
+            return redirect()
+                ->route('asset-scans.index')
                 ->with('error', 'QR Code tidak valid atau aset tidak ditemukan.');
         }
 
@@ -43,7 +44,7 @@ class AssetScanController extends Controller
             'keterangan' => 'Scan QR Code berhasil.',
         ]);
 
-        return redirect()->route('asset-scans.index')
-            ->with('success', 'QR Code valid. Aset: ' . $asset->nama_aset);
+        return redirect()->route('assets.show', $asset->id)
+            ->with('success', 'QR Code valid. Menampilkan detail aset.');
     }
 }

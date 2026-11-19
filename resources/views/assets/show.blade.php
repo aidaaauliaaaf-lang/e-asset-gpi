@@ -3,22 +3,26 @@
 @section('content')
 
 {{-- HEADER DETAIL ASET --}}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
         <h2 class="fw-bold mb-1">Detail Aset</h2>
         <p class="text-muted mb-0">Informasi lengkap aset</p>
     </div>
 
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap">
         <button type="button" class="btn btn-dark" onclick="printQRCode()">
+            <i class="bi bi-qr-code me-1"></i>
             Cetak QR Code
         </button>
 
-        <a href="{{ route('assets.edit', $asset) }}" class="btn btn-warning">
-            Edit
+        <a href="{{ route('maintenances.create', ['asset_id' => $asset->id]) }}"
+           class="btn btn-success">
+            <i class="bi bi-plus-lg me-1"></i>
+            Tambah Maintenance
         </a>
 
         <a href="{{ route('assets.index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
             Kembali
         </a>
     </div>
@@ -26,17 +30,20 @@
 
 {{-- NOTIFIKASI --}}
 @if(session('success'))
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show">
         {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
 @if(session('error'))
-    <div class="alert alert-danger">
+    <div class="alert alert-danger alert-dismissible fade show">
         {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
+{{-- INFORMASI ASET, QR CODE DAN FOTO --}}
 <div class="row g-4">
 
     {{-- INFORMASI ASET --}}
@@ -51,22 +58,18 @@
                 <div class="table-responsive">
                     <table class="table table-bordered align-middle mb-0">
                         <tbody>
-
                             <tr>
                                 <th width="35%">Kode Aset</th>
                                 <td>{{ $asset->kode_aset }}</td>
                             </tr>
-
                             <tr>
                                 <th>Nama Aset</th>
                                 <td>{{ $asset->nama_aset }}</td>
                             </tr>
-
                             <tr>
                                 <th>Kategori</th>
                                 <td>{{ $asset->kategori }}</td>
                             </tr>
-
                             <tr>
                                 <th>Tanggal Pembelian</th>
                                 <td>
@@ -75,41 +78,35 @@
                                         : '-' }}
                                 </td>
                             </tr>
-
                             <tr>
                                 <th>Lokasi</th>
                                 <td>{{ $asset->lokasi ?? '-' }}</td>
                             </tr>
-
                             <tr>
                                 <th>Divisi</th>
                                 <td>{{ $asset->divisi ?? '-' }}</td>
                             </tr>
-
                             <tr>
                                 <th>Penanggung Jawab</th>
                                 <td>{{ $asset->penanggung_jawab ?? '-' }}</td>
                             </tr>
-
                             <tr>
                                 <th>Kondisi</th>
                                 <td>{{ $asset->kondisi }}</td>
                             </tr>
-
                             <tr>
                                 <th>Status</th>
                                 <td>{{ $asset->status }}</td>
                             </tr>
-
                             <tr>
                                 <th>Keterangan</th>
                                 <td>{{ $asset->keterangan ?? '-' }}</td>
                             </tr>
-
                         </tbody>
                     </table>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -124,7 +121,6 @@
             </div>
 
             <div class="card-body">
-
                 <div id="qrcode"
                      class="d-flex justify-content-center align-items-center mb-3"
                      style="min-height: 210px;">
@@ -142,7 +138,6 @@
                 <small id="qr-status" class="text-muted d-block mt-3">
                     QR Code berisi kode aset untuk identifikasi.
                 </small>
-
             </div>
         </div>
 
@@ -156,7 +151,6 @@
             <div class="card-body text-center">
 
                 @if($asset->foto)
-
                     <a href="{{ \Illuminate\Support\Facades\Storage::url($asset->foto) }}"
                        target="_blank"
                        title="Lihat foto ukuran penuh">
@@ -165,14 +159,8 @@
                             src="{{ \Illuminate\Support\Facades\Storage::url($asset->foto) }}"
                             alt="Foto {{ $asset->nama_aset }}"
                             class="img-fluid rounded border"
-                            style="
-                                width: 100%;
-                                max-height: 280px;
-                                object-fit: contain;
-                                cursor: pointer;
-                            "
+                            style="width: 100%; max-height: 280px; object-fit: contain; cursor: pointer;"
                         >
-
                     </a>
 
                     <p class="text-muted mt-3 mb-0">
@@ -184,22 +172,16 @@
                     </small>
 
                 @else
-
                     <div class="py-5 text-muted">
                         <i class="bi bi-image" style="font-size: 55px;"></i>
-
-                        <p class="mt-3 mb-0">
-                            Belum ada foto aset.
-                        </p>
+                        <p class="mt-3 mb-0">Belum ada foto aset.</p>
                     </div>
-
                 @endif
 
             </div>
         </div>
 
     </div>
-
 </div>
 
 {{-- RIWAYAT MUTASI --}}
@@ -211,7 +193,6 @@
 
     <div class="card-body p-0">
         <div class="table-responsive">
-
             <table class="table table-bordered table-hover mb-0">
 
                 <thead class="table-light">
@@ -227,38 +208,30 @@
                 </thead>
 
                 <tbody>
-
                     @forelse($asset->mutations as $mutation)
-
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-
                             <td>
                                 {{ $mutation->tanggal_mutasi
                                     ? $mutation->tanggal_mutasi->format('d-m-Y')
                                     : '-' }}
                             </td>
-
                             <td>{{ $mutation->lokasi_asal ?? '-' }}</td>
                             <td>{{ $mutation->lokasi_tujuan ?? '-' }}</td>
                             <td>{{ $mutation->divisi_asal ?? '-' }}</td>
                             <td>{{ $mutation->divisi_tujuan ?? '-' }}</td>
                             <td>{{ $mutation->penanggung_jawab_baru ?? '-' }}</td>
                         </tr>
-
                     @empty
-
                         <tr>
                             <td colspan="7" class="text-center text-muted py-4">
                                 Belum ada riwayat mutasi.
                             </td>
                         </tr>
-
                     @endforelse
-
                 </tbody>
-            </table>
 
+            </table>
         </div>
     </div>
 </div>
@@ -266,13 +239,13 @@
 {{-- RIWAYAT MAINTENANCE --}}
 <div class="card shadow-sm border-0 mt-4 mb-4">
 
+    {{-- HEADER TANPA TOMBOL TAMBAH --}}
     <div class="card-header bg-dark text-white">
         <strong>Riwayat Maintenance</strong>
     </div>
 
     <div class="card-body p-0">
         <div class="table-responsive">
-
             <table class="table table-bordered table-hover mb-0">
 
                 <thead class="table-light">
@@ -286,9 +259,7 @@
                 </thead>
 
                 <tbody>
-
                     @forelse($asset->maintenances as $maintenance)
-
                         <tr>
                             <td>{{ $loop->iteration }}</td>
 
@@ -302,20 +273,16 @@
                             <td>{{ $maintenance->penanggung_jawab ?? '-' }}</td>
                             <td>{{ $maintenance->status }}</td>
                         </tr>
-
                     @empty
-
                         <tr>
                             <td colspan="5" class="text-center text-muted py-4">
                                 Belum ada riwayat maintenance.
                             </td>
                         </tr>
-
                     @endforelse
-
                 </tbody>
-            </table>
 
+            </table>
         </div>
     </div>
 </div>
@@ -338,7 +305,6 @@
         }
 
         if (typeof QRCode === 'undefined') {
-
             qrElement.innerHTML =
                 '<span class="text-danger">Library QR Code gagal dimuat.</span>';
 
@@ -392,7 +358,6 @@
             <head>
                 <meta charset="UTF-8">
                 <title>QR Code Aset</title>
-
                 <style>
                     body {
                         font-family: Arial, sans-serif;
@@ -410,13 +375,9 @@
                     }
                 </style>
             </head>
-
             <body>
-
                 <h2>QR Code Aset</h2>
-
                 <img src="${imageUrl}" alt="QR Code Aset">
-
                 <h3>${String(assetCode).replace(/[&<>"']/g, '')}</h3>
 
                 <script>
@@ -424,7 +385,6 @@
                         window.print();
                     };
                 <\/script>
-
             </body>
             </html>
         `);

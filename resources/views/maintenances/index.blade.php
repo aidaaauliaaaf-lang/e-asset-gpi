@@ -1,10 +1,9 @@
-
 @extends('layouts.app')
 
 @section('content')
 
-{{-- HEADER --}}
-<div class="d-flex justify-content-between align-items-center mb-4">
+{{-- HEADER HALAMAN --}}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
         <h2 class="fw-bold mb-1">Maintenance Aset</h2>
         <p class="text-muted mb-0">
@@ -12,12 +11,11 @@
         </p>
     </div>
 
-    {{-- Tambah Maintenance khusus Admin --}}
-    @if(strtolower(session('user_role', '')) === 'admin')
-        <a href="{{ route('maintenances.create') }}" class="btn btn-dark">
-            + Tambah Maintenance
-        </a>
-    @endif
+    {{-- TAMBAH MAINTENANCE --}}
+    <a href="{{ route('maintenances.create') }}" class="btn btn-dark">
+        <i class="bi bi-plus-lg me-1"></i>
+        Tambah Maintenance
+    </a>
 </div>
 
 {{-- NOTIFIKASI SUKSES --}}
@@ -29,8 +27,8 @@
             type="button"
             class="btn-close"
             data-bs-dismiss="alert"
-            aria-label="Close"
-        ></button>
+            aria-label="Close">
+        </button>
     </div>
 @endif
 
@@ -55,6 +53,7 @@
 
             <div class="row g-3 align-items-end">
 
+                {{-- PENCARIAN ASET --}}
                 <div class="col-md-5">
                     <label class="form-label fw-semibold">
                         Cari Aset
@@ -69,6 +68,7 @@
                     >
                 </div>
 
+                {{-- FILTER TANGGAL --}}
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">
                         Tanggal Maintenance
@@ -82,15 +82,16 @@
                     >
                 </div>
 
+                {{-- TOMBOL CARI DAN RESET --}}
                 <div class="col-md-3 d-flex gap-2">
                     <button type="submit" class="btn btn-dark">
-                        <i class="bi bi-search"></i> Cari
+                        <i class="bi bi-search"></i>
+                        Cari
                     </button>
 
                     <a
                         href="{{ route('maintenances.index') }}"
-                        class="btn btn-outline-secondary"
-                    >
+                        class="btn btn-outline-secondary">
                         Reset
                     </a>
                 </div>
@@ -228,8 +229,8 @@
                                             href="{{ $urlDokumen }}"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            title="Klik untuk melihat foto"
-                                        >
+                                            title="Klik untuk melihat foto">
+
                                             <img
                                                 src="{{ $urlDokumen }}"
                                                 alt="Dokumentasi Maintenance"
@@ -251,8 +252,8 @@
                                             href="{{ $urlDokumen }}"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            class="btn btn-sm btn-outline-danger"
-                                        >
+                                            class="btn btn-sm btn-outline-danger">
+
                                             <i class="bi bi-file-earmark-pdf"></i>
                                             Lihat PDF
                                         </a>
@@ -283,8 +284,7 @@
                         <tr>
                             <td
                                 colspan="9"
-                                class="text-center text-muted py-5"
-                            >
+                                class="text-center text-muted py-5">
                                 Data maintenance tidak ditemukan.
                             </td>
                         </tr>
