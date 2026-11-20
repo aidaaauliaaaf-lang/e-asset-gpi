@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -46,7 +45,7 @@
         </div>
     </div>
 
-    {{-- KARTU RINGKASAN TANPA EMOJI ATAU IKON --}}
+    {{-- KARTU RINGKASAN --}}
     <div class="row g-3 mb-4">
 
         <div class="col-md-6 col-xl-3">
@@ -247,7 +246,7 @@
         </div>
     </div>
 
-    {{-- ASET TERBARU --}}
+    {{-- DATA ASET TERBARU --}}
     <div class="card section-card shadow-sm">
         <div class="card-header bg-white py-3">
             <h6 class="section-title mb-0">Data Aset Terbaru</h6>
@@ -295,7 +294,7 @@
 
 @else
 
-{{-- DASHBOARD ADMIN DAN KARYAWAN: TETAP SEPERTI SEMULA --}}
+{{-- DASHBOARD ADMIN DAN KARYAWAN --}}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -309,74 +308,7 @@
     </div>
 </div>
 
-<div class="row g-3 mb-4">
-
-    {{-- INPUT ASET: HANYA ADMIN --}}
-    @if($role === 'admin')
-        <div class="col-md-4">
-            <a href="{{ route('assets.create') }}"
-               class="card shadow-sm border-0 text-decoration-none h-100">
-                <div class="card-body">
-                    <h5 class="fw-bold text-dark">Input Aset</h5>
-                    <p class="text-muted mb-0">
-                        Tambahkan data aset baru.
-                    </p>
-                </div>
-            </a>
-        </div>
-    @endif
-
-    {{-- INPUT MAINTENANCE: ADMIN DAN KARYAWAN --}}
-    @if(in_array($role, ['admin', 'karyawan'], true))
-        <div class="col-md-4">
-            <a href="{{ route('maintenances.create') }}"
-               class="card shadow-sm border-0 text-decoration-none h-100">
-                <div class="card-body">
-                    <h5 class="fw-bold text-dark">Input Maintenance</h5>
-                    <p class="text-muted mb-0">
-                        Tambahkan data maintenance aset.
-                    </p>
-                </div>
-            </a>
-        </div>
-    @endif
-
-    @if(in_array($role, ['admin', 'pimpinan'], true))
-        <div class="col-md-4">
-            <a href="{{ route('mutations.index') }}"
-               class="card shadow-sm border-0 text-decoration-none h-100">
-                <div class="card-body">
-                    <h5 class="fw-bold text-dark">Laporan Mutasi</h5>
-                    <p class="text-muted mb-0">Lihat informasi mutasi aset.</p>
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-4">
-            <a href="{{ route('maintenances.index') }}"
-               class="card shadow-sm border-0 text-decoration-none h-100">
-                <div class="card-body">
-                    <h5 class="fw-bold text-dark">Laporan Maintenance</h5>
-                    <p class="text-muted mb-0">Lihat informasi Maintenance aset.</p>
-                </div>
-            </a>
-        </div>
-    @endif
-
-    @if($role === 'admin')
-        <div class="col-md-4">
-            <a href="{{ route('users.index') }}"
-               class="card shadow-sm border-0 text-decoration-none h-100">
-                <div class="card-body">
-                    <h5 class="fw-bold text-dark">Manajemen Pengguna</h5>
-                    <p class="text-muted mb-0">Kelola akun dan hak akses pengguna.</p>
-                </div>
-            </a>
-        </div>
-    @endif
-
-</div>
-
+{{-- STATISTIK ASET --}}
 <div class="row g-4">
 
     <div class="col-md-4">
@@ -435,6 +367,7 @@
 
 </div>
 
+{{-- TABEL ASET TERBARU --}}
 <div class="card shadow-sm border-0 mt-4">
     <div class="card-header bg-dark text-white">
         <strong>Aset Terbaru</strong>

@@ -440,18 +440,21 @@
 
         {{-- DATA ASET --}}
         @if($canManageAssets)
+
             <a class="menu-link {{ str_starts_with($currentRoute, 'assets.') && !in_array($currentRoute, ['assets.create', 'assets.store'], true) ? 'active' : '' }}"
                href="{{ route('assets.index') }}">
                 <i class="bi bi-box-seam-fill"></i>
                 <span class="menu-text">Data Aset</span>
             </a>
 
-            {{-- INPUT ASET --}}
-            <a class="menu-link {{ in_array($currentRoute, ['assets.create', 'assets.store'], true) ? 'active' : '' }}"
-               href="{{ route('assets.create') }}">
-                <i class="bi bi-clipboard-plus-fill"></i>
-                <span class="menu-text">Input Aset</span>
-            </a>
+            {{-- INPUT ASET KHUSUS ADMIN --}}
+            @if($isAdmin)
+                <a class="menu-link {{ in_array($currentRoute, ['assets.create', 'assets.store'], true) ? 'active' : '' }}"
+                   href="{{ route('assets.create') }}">
+                    <i class="bi bi-clipboard-plus-fill"></i>
+                    <span class="menu-text">Input Aset</span>
+                </a>
+            @endif
 
             {{-- SCAN QR CODE --}}
             <a class="menu-link {{ str_starts_with($currentRoute, 'asset-scans.') ? 'active' : '' }}"
@@ -459,6 +462,7 @@
                 <i class="bi bi-qr-code-scan"></i>
                 <span class="menu-text">Scan QR Code</span>
             </a>
+
         @endif
 
         {{-- PROFIL KARYAWAN --}}
@@ -470,6 +474,7 @@
 
         {{-- MUTASI ASET DAN PEMELIHARAAN --}}
         @if($isAdmin || $isPimpinan)
+
             <a class="menu-link {{ str_starts_with($currentRoute, 'mutations.') ? 'active' : '' }}"
                href="{{ route('mutations.index') }}">
                 <i class="bi bi-arrow-left-right"></i>
@@ -481,24 +486,29 @@
                 <i class="bi bi-tools"></i>
                 <span class="menu-text">Pemeliharaan</span>
             </a>
+
         @endif
 
         {{-- LAPORAN --}}
         @if($canViewReports)
+
             <a class="menu-link {{ request()->is('laporan*') || str_starts_with($currentRoute, 'reports.') ? 'active' : '' }}"
                href="{{ url('/laporan') }}">
                 <i class="bi bi-file-earmark-text-fill"></i>
                 <span class="menu-text">Laporan</span>
             </a>
+
         @endif
 
         {{-- MANAJEMEN PENGGUNA --}}
         @if($isAdmin)
+
             <a class="menu-link {{ str_starts_with($currentRoute, 'users.') ? 'active' : '' }}"
                href="{{ route('users.index') }}">
                 <i class="bi bi-people-fill"></i>
                 <span class="menu-text">Manajemen Pengguna</span>
             </a>
+
         @endif
 
         <hr class="sidebar-divider">

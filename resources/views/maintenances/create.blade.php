@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -61,7 +60,7 @@
                     @php
                         $selectedAssetId = old(
                             'asset_id',
-                            request()->query('asset_id')
+                            $asset->id ?? request()->query('asset_id')
                         );
                     @endphp
 
@@ -73,15 +72,15 @@
                     >
                         <option value="">-- Pilih Aset --</option>
 
-                        @foreach($assets as $asset)
+                        @foreach($assets as $item)
                             <option
-                                value="{{ $asset->id }}"
-                                data-lokasi="{{ $asset->lokasi }}"
-                                data-divisi="{{ $asset->divisi }}"
-                                data-pj="{{ $asset->penanggung_jawab }}"
-                                {{ (string) $selectedAssetId === (string) $asset->id ? 'selected' : '' }}
+                                value="{{ $item->id }}"
+                                data-lokasi="{{ $item->lokasi ?? '' }}"
+                                data-divisi="{{ $item->divisi ?? '' }}"
+                                data-pj="{{ $item->penanggung_jawab ?? '' }}"
+                                {{ (string) $selectedAssetId === (string) $item->id ? 'selected' : '' }}
                             >
-                                {{ $asset->kode_aset }} - {{ $asset->nama_aset }}
+                                {{ $item->kode_aset }} - {{ $item->nama_aset }}
                             </option>
                         @endforeach
                     </select>
@@ -97,6 +96,7 @@
                         <div class="card-body bg-light">
                             <div class="row">
 
+                                {{-- LOKASI ASET --}}
                                 <div class="col-md-4 mb-2">
                                     <label class="form-label">
                                         Kantor / Lokasi Aset
@@ -106,11 +106,13 @@
                                         type="text"
                                         id="lokasi_aset"
                                         class="form-control"
-                                        placeholder="Otomatis dari data aset"
+                                        value="{{ old('asset_id') ? '' : ($asset->lokasi ?? '') }}"
+                                        placeholder="Data lokasi aset"
                                         readonly
                                     >
                                 </div>
 
+                                {{-- DIVISI ASET --}}
                                 <div class="col-md-4 mb-2">
                                     <label class="form-label">
                                         Divisi Aset
@@ -120,11 +122,13 @@
                                         type="text"
                                         id="divisi_aset"
                                         class="form-control"
-                                        placeholder="Otomatis dari data aset"
+                                        value="{{ old('asset_id') ? '' : ($asset->divisi ?? '') }}"
+                                        placeholder="Data divisi aset"
                                         readonly
                                     >
                                 </div>
 
+                                {{-- PENANGGUNG JAWAB ASET --}}
                                 <div class="col-md-4 mb-2">
                                     <label class="form-label">
                                         Penanggung Jawab Aset
@@ -134,7 +138,8 @@
                                         type="text"
                                         id="pj_aset"
                                         class="form-control"
-                                        placeholder="Otomatis dari data aset"
+                                        value="{{ old('asset_id') ? '' : ($asset->penanggung_jawab ?? '') }}"
+                                        placeholder="Data penanggung jawab aset"
                                         readonly
                                     >
                                 </div>
@@ -278,7 +283,7 @@
                             >
 
                             <div id="preview-pdf" style="display:none;">
-                                📄 <span id="nama-pdf"></span>
+                                File PDF: <span id="nama-pdf"></span>
                             </div>
                         </div>
                     </div>
@@ -336,8 +341,9 @@ document.addEventListener('DOMContentLoaded', function () {
         pjAset.value = selectedOption.dataset.pj || '';
     }
 
-    // Jalankan saat halaman dibuka dan saat aset diganti
     assetSelect.addEventListener('change', isiDataAset);
+
+    // Jalankan ketika halaman pertama kali dibuka
     isiDataAset();
 
 

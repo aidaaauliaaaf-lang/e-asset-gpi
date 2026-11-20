@@ -10,6 +10,10 @@ use Throwable;
 
 class MaintenanceController extends Controller
 {
+    /**
+     * Menampilkan daftar maintenance.
+     * Admin, pimpinan, dan karyawan dapat melihat.
+     */
     public function index(Request $request)
     {
         $query = Maintenance::with('asset');
@@ -26,7 +30,10 @@ class MaintenanceController extends Controller
 
         // Filter tanggal maintenance
         if ($request->filled('tanggal')) {
-            $query->whereDate('tanggal_maintenance', $request->tanggal);
+            $query->whereDate(
+                'tanggal_maintenance',
+                $request->tanggal
+            );
         }
 
         $maintenances = $query
@@ -38,15 +45,51 @@ class MaintenanceController extends Controller
         return view('maintenances.index', compact('maintenances'));
     }
 
-    public function create()
+    /**
+     * Form maintenance hanya dapat dibuka
+     * setelah pengguna melakukan Scan QR Code.
+     */
+    public function create(Request $request)
     {
-        $assets = Asset::orderBy('nama_aset')->get();
+        $role = $request->session()->get('user_role');
 
-        return view('maintenances.create', compact('assets'));
+        if (!in_array($role, ['admin', 'karyawan'], true)) {
+            abort(403, 'Anda tidak memiliki akses input maintenance.');
+        }
+
+        $assetId = $request->query('asset_id');
+
+        $scannedAssetId = $request->session()->get('scanned_asset_id');
+
+        // Pastikan aset sudah dipindai melalui QR
+        if (!$assetId || (int) $assetId !== (int) $scannedAssetId) {
+            return redirect()
+                ->route('asset-scans.index')
+                ->with('error', 'Silakan scan QR Code aset terlebih dahulu.');
+        }
+
+        $asset = Asset::findOrFail($assetId);
+
+        $assets = collect([$asset]);
+
+        return view('maintenances.create', compact('assets', 'asset'));
     }
 
+    /**
+     * Menyimpan data maintenance.
+     * Hanya admin dan karyawan.
+     */
     public function store(Request $request)
     {
+        $role = $request->session()->get('user_role');
+
+        if (!in_array($role, ['admin', 'karyawan'], true)) {
+            abort(403, 'Anda tidak memiliki akses input maintenance.');
+        }
+
+        $scannedAssetId = $request->session()->get('scanned_asset_id');
+
+        // Validasi data
         $validated = $request->validate([
             'asset_id' => ['required', 'exists:assets,id'],
             'tanggal_maintenance' => ['required', 'date'],
@@ -69,10 +112,20 @@ class MaintenanceController extends Controller
             'dokumen.max' => 'Ukuran dokumen maksimal 5 MB.',
         ]);
 
+        // Pastikan aset yang dikirim sama dengan hasil scan
+        if (
+            !$scannedAssetId ||
+            (int) $validated['asset_id'] !== (int) $scannedAssetId
+        ) {
+            return redirect()
+                ->route('asset-scans.index')
+                ->with('error', 'Aset tidak sesuai dengan QR Code yang dipindai.');
+        }
+
         $path = null;
 
         try {
-            // Upload dokumen ke storage
+            // Upload dokumen
             if ($request->hasFile('dokumen')) {
                 $path = $request->file('dokumen')
                     ->store('maintenance', 'public');
@@ -84,7 +137,8 @@ class MaintenanceController extends Controller
             Maintenance::create($validated);
 
         } catch (Throwable $e) {
-            // Hapus file jika penyimpanan data gagal
+
+            // Hapus file jika penyimpanan gagal
             if ($path) {
                 Storage::disk('public')->delete($path);
             }
@@ -92,8 +146,11 @@ class MaintenanceController extends Controller
             throw $e;
         }
 
+        // Hapus izin scan setelah maintenance berhasil disimpan
+        $request->session()->forget('scanned_asset_id');
+
         return redirect()
-            ->route('maintenances.index')
-            ->with('success', 'Data maintenance dan dokumentasi berhasil disimpan.');
+            ->route('assets.show', $validated['asset_id'])
+            ->with('success', 'Data maintenance berhasil disimpan.');
     }
 }

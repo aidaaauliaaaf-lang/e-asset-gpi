@@ -71,7 +71,7 @@ Route::middleware('role:admin')->group(function () {
 
 });
 
-// MELIHAT DATA ASET
+// MELIHAT DATA ASET DAN DETAIL ASET
 // ADMIN, PIMPINAN, KARYAWAN
 
 Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
@@ -122,7 +122,7 @@ Route::middleware('role:admin,karyawan')->group(function () {
 
 // ==================================================
 // MUTASI ASET
-// ADMIN DAN PIMPINAN: MELIHAT DATA
+// MELIHAT DATA: ADMIN DAN PIMPINAN
 // ==================================================
 
 Route::middleware('role:admin,pimpinan')->group(function () {
@@ -132,7 +132,9 @@ Route::middleware('role:admin,pimpinan')->group(function () {
 
 });
 
-// HANYA ADMIN: MENAMBAH MUTASI
+// INPUT MUTASI
+// HANYA ADMIN
+// INPUT DILAKUKAN MELALUI DETAIL ASET HASIL SCAN QR
 
 Route::middleware('role:admin')->group(function () {
 
@@ -146,7 +148,7 @@ Route::middleware('role:admin')->group(function () {
 
 // ==================================================
 // MAINTENANCE ASET
-// ADMIN, PIMPINAN, KARYAWAN: MELIHAT DATA
+// MELIHAT RIWAYAT: ADMIN, PIMPINAN, KARYAWAN
 // ==================================================
 
 Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
@@ -158,6 +160,7 @@ Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 
 // INPUT MAINTENANCE
 // ADMIN DAN KARYAWAN
+// FORM HANYA DAPAT DIAKSES SETELAH SCAN QR
 
 Route::middleware('role:admin,karyawan')->group(function () {
 
