@@ -21,6 +21,15 @@
             Tambah Maintenance
         </a>
 
+        {{-- MUTASI KHUSUS ADMIN --}}
+        @if(strtolower(session('user_role', '')) === 'admin')
+            <a href="{{ route('mutations.create', ['asset_id' => $asset->id]) }}"
+               class="btn btn-primary">
+                <i class="bi bi-arrow-left-right me-1"></i>
+                Mutasi Aset
+            </a>
+        @endif
+
         <a href="{{ route('assets.index') }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-1"></i>
             Kembali
@@ -239,7 +248,6 @@
 {{-- RIWAYAT MAINTENANCE --}}
 <div class="card shadow-sm border-0 mt-4 mb-4">
 
-    {{-- HEADER TANPA TOMBOL TAMBAH --}}
     <div class="card-header bg-dark text-white">
         <strong>Riwayat Maintenance</strong>
     </div>

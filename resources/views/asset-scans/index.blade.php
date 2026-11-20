@@ -7,7 +7,8 @@
     <div class="mb-4">
         <h2 class="fw-bold">Scan QR Code Aset</h2>
         <p class="text-muted">
-            PT Golden Piping Indonesia — Pemindaian aset oleh karyawan
+            PT Golden Piping Indonesia — Pemindaian aset oleh
+            {{ strtolower(session('user_role', '')) === 'admin' ? 'admin' : 'karyawan' }}
         </p>
     </div>
 
@@ -46,6 +47,7 @@
                   action="{{ route('asset-scans.store') }}"
                   method="POST">
                 @csrf
+
                 <input type="hidden" id="qr_code" name="qr_code">
             </form>
 

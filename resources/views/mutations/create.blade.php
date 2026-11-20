@@ -4,6 +4,10 @@
 
 @section('content')
 
+@php
+    $selectedAssetId = old('asset_id', request()->query('asset_id'));
+@endphp
+
 <div class="container-fluid">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -30,7 +34,6 @@
             </ul>
         </div>
     @endif
-
 
     <div class="card shadow-sm border-0">
 
@@ -71,6 +74,7 @@
                                 data-lokasi="{{ $asset->lokasi }}"
                                 data-divisi="{{ $asset->divisi }}"
                                 data-pj="{{ $asset->penanggung_jawab }}"
+                                {{ (string) $selectedAssetId === (string) $asset->id ? 'selected' : '' }}
                             >
                                 {{ $asset->kode_aset }} -
                                 {{ $asset->nama_aset }}
@@ -81,7 +85,6 @@
                     </select>
 
                 </div>
-
 
                 {{-- DATA LAMA --}}
                 <div class="card bg-light border mb-4">
@@ -94,9 +97,7 @@
 
                         <div class="row g-3">
 
-                            {{-- KANTOR / LOKASI ASAL --}}
                             <div class="col-md-4">
-
                                 <label class="form-label fw-semibold">
                                     Kantor / Lokasi Asal
                                 </label>
@@ -106,16 +107,13 @@
                                     name="lokasi_asal"
                                     id="lokasi_asal"
                                     class="form-control"
+                                    value="{{ old('lokasi_asal') }}"
                                     readonly
                                     placeholder="Otomatis dari data aset"
                                 >
-
                             </div>
 
-
-                            {{-- DIVISI ASAL --}}
                             <div class="col-md-4">
-
                                 <label class="form-label fw-semibold">
                                     Divisi Asal
                                 </label>
@@ -125,16 +123,13 @@
                                     name="divisi_asal"
                                     id="divisi_asal"
                                     class="form-control"
+                                    value="{{ old('divisi_asal') }}"
                                     readonly
                                     placeholder="Otomatis dari data aset"
                                 >
-
                             </div>
 
-
-                            {{-- PJ LAMA --}}
                             <div class="col-md-4">
-
                                 <label class="form-label fw-semibold">
                                     Penanggung Jawab Lama
                                 </label>
@@ -144,18 +139,16 @@
                                     name="penanggung_jawab_lama"
                                     id="penanggung_jawab_lama"
                                     class="form-control"
+                                    value="{{ old('penanggung_jawab_lama') }}"
                                     readonly
                                     placeholder="Otomatis dari data aset"
                                 >
-
                             </div>
 
                         </div>
 
                     </div>
-
                 </div>
-
 
                 {{-- DATA BARU --}}
                 <div class="card border mb-4">
@@ -168,9 +161,7 @@
 
                         <div class="row g-3">
 
-                            {{-- KANTOR TUJUAN --}}
                             <div class="col-md-4">
-
                                 <label class="form-label fw-semibold">
                                     Kantor / Lokasi Tujuan
                                     <span class="text-danger">*</span>
@@ -184,13 +175,9 @@
                                     value="{{ old('lokasi_tujuan') }}"
                                     required
                                 >
-
                             </div>
 
-
-                            {{-- DIVISI TUJUAN --}}
                             <div class="col-md-4">
-
                                 <label class="form-label fw-semibold">
                                     Divisi Tujuan
                                     <span class="text-danger">*</span>
@@ -204,13 +191,9 @@
                                     value="{{ old('divisi_tujuan') }}"
                                     required
                                 >
-
                             </div>
 
-
-                            {{-- PJ BARU --}}
                             <div class="col-md-4">
-
                                 <label class="form-label fw-semibold">
                                     Penanggung Jawab Baru
                                     <span class="text-danger">*</span>
@@ -224,15 +207,12 @@
                                     value="{{ old('penanggung_jawab_baru') }}"
                                     required
                                 >
-
                             </div>
 
                         </div>
 
                     </div>
-
                 </div>
-
 
                 {{-- TANGGAL & KETERANGAN --}}
                 <div class="row g-3 mb-4">
@@ -254,7 +234,6 @@
 
                     </div>
 
-
                     <div class="col-md-6">
 
                         <label class="form-label fw-semibold">
@@ -271,7 +250,6 @@
                     </div>
 
                 </div>
-
 
                 {{-- BUTTON --}}
                 <div class="d-flex justify-content-end gap-2">
@@ -302,11 +280,9 @@
 
 @endsection
 
-
 @push('scripts')
 
 <script>
-
 document.addEventListener('DOMContentLoaded', function () {
 
     const assetSelect = document.getElementById('asset_id');
@@ -317,14 +293,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const pjLama = document.getElementById('penanggung_jawab_lama');
 
-
-    assetSelect.addEventListener('change', function () {
+    function isiDataAset() {
 
         const selectedOption =
             assetSelect.options[assetSelect.selectedIndex];
 
-
-        if (selectedOption.value === '') {
+        if (!selectedOption || selectedOption.value === '') {
 
             lokasiAsal.value = '';
             divisiAsal.value = '';
@@ -332,7 +306,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return;
         }
-
 
         lokasiAsal.value =
             selectedOption.getAttribute('data-lokasi') || '';
@@ -342,11 +315,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         pjLama.value =
             selectedOption.getAttribute('data-pj') || '';
+    }
 
-    });
+    assetSelect.addEventListener('change', isiDataAset);
+
+    // Otomatis mengisi data asal ketika halaman dibuka
+    isiDataAset();
 
 });
-
 </script>
 
 @endpush

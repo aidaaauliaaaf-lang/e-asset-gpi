@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -20,16 +21,6 @@
         transform: translateY(-2px);
     }
 
-    .pimpinan-dashboard .summary-icon {
-        width: 45px;
-        height: 45px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px;
-        font-size: 21px;
-    }
-
     .pimpinan-dashboard .section-card {
         border: 1px solid #e9edf3;
         border-radius: 12px;
@@ -40,7 +31,6 @@
         font-weight: 700;
         color: #172554;
     }
-
 </style>
 
 <div class="pimpinan-dashboard">
@@ -56,61 +46,41 @@
         </div>
     </div>
 
-    {{-- KARTU RINGKASAN --}}
+    {{-- KARTU RINGKASAN TANPA EMOJI ATAU IKON --}}
     <div class="row g-3 mb-4">
 
         <div class="col-md-6 col-xl-3">
             <div class="card summary-card shadow-sm h-100">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="summary-icon bg-primary-subtle text-primary">
-                        📦
-                    </div>
-                    <div>
-                        <div class="text-muted small">Total Aset</div>
-                        <h3 class="fw-bold mb-0">{{ $totalAssets }}</h3>
-                    </div>
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="text-muted small mb-2">Total Aset</div>
+                    <h3 class="fw-bold mb-0">{{ $totalAssets }}</h3>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6 col-xl-3">
             <div class="card summary-card shadow-sm h-100">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="summary-icon bg-success-subtle text-success">
-                        ✓
-                    </div>
-                    <div>
-                        <div class="text-muted small">Aset Aktif</div>
-                        <h3 class="fw-bold mb-0">{{ $activeAssets }}</h3>
-                    </div>
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="text-muted small mb-2">Aset Aktif</div>
+                    <h3 class="fw-bold mb-0">{{ $activeAssets }}</h3>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6 col-xl-3">
             <div class="card summary-card shadow-sm h-100">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="summary-icon bg-info-subtle text-info">
-                        ✔
-                    </div>
-                    <div>
-                        <div class="text-muted small">Kondisi Baik</div>
-                        <h3 class="fw-bold mb-0">{{ $goodAssets }}</h3>
-                    </div>
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="text-muted small mb-2">Kondisi Baik</div>
+                    <h3 class="fw-bold mb-0">{{ $goodAssets }}</h3>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6 col-xl-3">
             <div class="card summary-card shadow-sm h-100">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="summary-icon bg-danger-subtle text-danger">
-                        !
-                    </div>
-                    <div>
-                        <div class="text-muted small">Aset Rusak</div>
-                        <h3 class="fw-bold mb-0">{{ $damagedAssets }}</h3>
-                    </div>
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="text-muted small mb-2">Aset Rusak</div>
+                    <h3 class="fw-bold mb-0">{{ $damagedAssets }}</h3>
                 </div>
             </div>
         </div>
@@ -341,36 +311,35 @@
 
 <div class="row g-3 mb-4">
 
-{{-- INPUT ASET: HANYA ADMIN --}}
-@if($role === 'admin')
-    <div class="col-md-4">
-        <a href="{{ route('assets.create') }}"
-           class="card shadow-sm border-0 text-decoration-none h-100">
-            <div class="card-body">
-                <h5 class="fw-bold text-dark">Input Aset</h5>
-                <p class="text-muted mb-0">
-                    Tambahkan data aset baru.
-                </p>
-            </div>
-        </a>
-    </div>
-@endif
+    {{-- INPUT ASET: HANYA ADMIN --}}
+    @if($role === 'admin')
+        <div class="col-md-4">
+            <a href="{{ route('assets.create') }}"
+               class="card shadow-sm border-0 text-decoration-none h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold text-dark">Input Aset</h5>
+                    <p class="text-muted mb-0">
+                        Tambahkan data aset baru.
+                    </p>
+                </div>
+            </a>
+        </div>
+    @endif
 
-{{-- INPUT MAINTENANCE: ADMIN DAN KARYAWAN --}}
-@if(in_array($role, ['admin', 'karyawan'], true))
-    <div class="col-md-4">
-        <a href="{{ route('maintenances.create') }}"
-           class="card shadow-sm border-0 text-decoration-none h-100">
-            <div class="card-body">
-                <h5 class="fw-bold text-dark">Input Maintenance</h5>
-                <p class="text-muted mb-0">
-                    Tambahkan data maintenance aset.
-                </p>
-            </div>
-        </a>
-    </div>
-@endif
-
+    {{-- INPUT MAINTENANCE: ADMIN DAN KARYAWAN --}}
+    @if(in_array($role, ['admin', 'karyawan'], true))
+        <div class="col-md-4">
+            <a href="{{ route('maintenances.create') }}"
+               class="card shadow-sm border-0 text-decoration-none h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold text-dark">Input Maintenance</h5>
+                    <p class="text-muted mb-0">
+                        Tambahkan data maintenance aset.
+                    </p>
+                </div>
+            </a>
+        </div>
+    @endif
 
     @if(in_array($role, ['admin', 'pimpinan'], true))
         <div class="col-md-4">
