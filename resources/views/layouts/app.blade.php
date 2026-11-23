@@ -465,15 +465,17 @@
 
         @endif
 
-        {{-- PROFIL KARYAWAN --}}
-        <a class="menu-link {{ str_starts_with($currentRoute, 'profile.') ? 'active' : '' }}"
-           href="{{ route('profile.show') }}">
-            <i class="bi bi-person-circle"></i>
-            <span class="menu-text">Profil Karyawan</span>
-        </a>
+{{-- PROFIL --}}
+<a class="menu-link {{ str_starts_with($currentRoute, 'profile.') ? 'active' : '' }}"
+   href="{{ route('profile.show') }}">
+    <i class="bi bi-person-circle"></i>
+    <span class="menu-text">
+        {{ $isPimpinan ? 'Profil Pimpinan' : 'Profil Karyawan' }}
+    </span>
+</a>
 
-        {{-- MUTASI ASET DAN PEMELIHARAAN --}}
-        @if($isAdmin || $isPimpinan)
+        {{-- MUTASI ASET DAN PEMELIHARAAN KHUSUS ADMIN --}}
+        @if($isAdmin)
 
             <a class="menu-link {{ str_starts_with($currentRoute, 'mutations.') ? 'active' : '' }}"
                href="{{ route('mutations.index') }}">
@@ -584,6 +586,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+@stack('scripts')
 
 </body>
 </html>

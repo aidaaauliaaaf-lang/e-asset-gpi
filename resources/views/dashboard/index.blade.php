@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -45,7 +46,7 @@
         </div>
     </div>
 
-    {{-- KARTU RINGKASAN --}}
+    {{-- KARTU RINGKASAN ASET --}}
     <div class="row g-3 mb-4">
 
         <div class="col-md-6 col-xl-3">
@@ -86,41 +87,6 @@
 
     </div>
 
-    {{-- INFORMASI MUTASI DAN MAINTENANCE --}}
-    <div class="row g-3 mb-4">
-
-        <div class="col-md-6">
-            <div class="card section-card shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="text-muted small">Total Mutasi Aset</div>
-                        <h4 class="fw-bold mb-0">{{ $totalMutations }}</h4>
-                    </div>
-                    <a href="{{ route('mutations.index') }}"
-                       class="btn btn-outline-primary btn-sm">
-                        Lihat Mutasi
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card section-card shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="text-muted small">Total Maintenance</div>
-                        <h4 class="fw-bold mb-0">{{ $totalMaintenances }}</h4>
-                    </div>
-                    <a href="{{ route('maintenances.index') }}"
-                       class="btn btn-outline-primary btn-sm">
-                        Lihat Maintenance
-                    </a>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
     {{-- REKAP ASET PER DIVISI --}}
     <div class="card section-card shadow-sm mb-4">
         <div class="card-header bg-white py-3">
@@ -138,6 +104,7 @@
                             <th width="180">Jumlah Aset</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @forelse($divisionAssets as $division)
                             <tr>
@@ -178,6 +145,7 @@
                             <th width="180">Jumlah</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @forelse($conditionSummary as $condition)
                             <tr>
@@ -216,20 +184,26 @@
                             <th>Keterangan</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @forelse($recentActivities as $activity)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+
                                 <td>
                                     {{ optional($activity['tanggal'])->format('d-m-Y') ?? '-' }}
                                 </td>
+
                                 <td>
                                     @if($activity['jenis'] === 'Mutasi')
                                         <span class="badge bg-primary">Mutasi</span>
                                     @else
-                                        <span class="badge bg-warning text-dark">Maintenance</span>
+                                        <span class="badge bg-warning text-dark">
+                                            Maintenance
+                                        </span>
                                     @endif
                                 </td>
+
                                 <td>{{ $activity['kode_aset'] }}</td>
                                 <td>{{ $activity['keterangan'] }}</td>
                             </tr>
@@ -266,6 +240,7 @@
                             <th>Status</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @forelse($recentAssets as $asset)
                             <tr>
@@ -388,6 +363,7 @@
                             <th>Status</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach($recentAssets as $asset)
                             <tr>

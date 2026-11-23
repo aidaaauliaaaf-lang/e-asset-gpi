@@ -1,14 +1,22 @@
+
 @extends('layouts.app')
 
 @section('content')
+
+@php
+    $selectedAssetId = old(
+        'asset_id',
+        $asset->id ?? request()->query('asset_id')
+    );
+
+    $selectedAsset = $assets->firstWhere('id', $selectedAssetId);
+@endphp
 
 {{-- JUDUL HALAMAN --}}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="fw-bold mb-1">Tambah Maintenance</h2>
-        <p class="text-muted mb-0">
-            Tambahkan data maintenance aset
-        </p>
+        <p class="text-muted mb-0">Tambahkan data maintenance aset</p>
     </div>
 
     <a href="{{ route('maintenances.index') }}" class="btn btn-secondary">
@@ -57,13 +65,6 @@
                         Pilih Aset <span class="text-danger">*</span>
                     </label>
 
-                    @php
-                        $selectedAssetId = old(
-                            'asset_id',
-                            $asset->id ?? request()->query('asset_id')
-                        );
-                    @endphp
-
                     <select
                         name="asset_id"
                         id="asset_id"
@@ -78,6 +79,8 @@
                                 data-lokasi="{{ $item->lokasi ?? '' }}"
                                 data-divisi="{{ $item->divisi ?? '' }}"
                                 data-pj="{{ $item->penanggung_jawab ?? '' }}"
+                                data-kondisi="{{ $item->kondisi ?? '' }}"
+                                data-keterangan="{{ $item->keterangan ?? '' }}"
                                 {{ (string) $selectedAssetId === (string) $item->id ? 'selected' : '' }}
                             >
                                 {{ $item->kode_aset }} - {{ $item->nama_aset }}
@@ -90,58 +93,111 @@
                 <div class="col-12 mb-4">
                     <div class="card border">
                         <div class="card-header bg-light">
-                            <strong>Data Aset Saat Ini</strong>
+                            <strong>Informasi Aset</strong>
                         </div>
 
-                        <div class="card-body bg-light">
+                        <div class="card-body">
                             <div class="row">
 
-                                {{-- LOKASI ASET --}}
-                                <div class="col-md-4 mb-2">
-                                    <label class="form-label">
-                                        Kantor / Lokasi Aset
-                                    </label>
+                                {{-- LOKASI --}}
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Lokasi Aset</label>
 
                                     <input
                                         type="text"
                                         id="lokasi_aset"
                                         class="form-control"
-                                        value="{{ old('asset_id') ? '' : ($asset->lokasi ?? '') }}"
-                                        placeholder="Data lokasi aset"
+                                        value="{{ $selectedAsset->lokasi ?? '' }}"
+                                        placeholder="Lokasi aset"
                                         readonly
                                     >
                                 </div>
 
-                                {{-- DIVISI ASET --}}
-                                <div class="col-md-4 mb-2">
-                                    <label class="form-label">
-                                        Divisi Aset
-                                    </label>
+                                {{-- DIVISI --}}
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Divisi Aset</label>
 
                                     <input
                                         type="text"
                                         id="divisi_aset"
                                         class="form-control"
-                                        value="{{ old('asset_id') ? '' : ($asset->divisi ?? '') }}"
-                                        placeholder="Data divisi aset"
+                                        value="{{ $selectedAsset->divisi ?? '' }}"
+                                        placeholder="Divisi aset"
                                         readonly
                                     >
                                 </div>
 
                                 {{-- PENANGGUNG JAWAB ASET --}}
-                                <div class="col-md-4 mb-2">
+                                <div class="col-md-6 mb-3">
                                     <label class="form-label">
                                         Penanggung Jawab Aset
                                     </label>
 
                                     <input
                                         type="text"
-                                        id="pj_aset"
+                                        id="penanggung_jawab_aset"
                                         class="form-control"
-                                        value="{{ old('asset_id') ? '' : ($asset->penanggung_jawab ?? '') }}"
-                                        placeholder="Data penanggung jawab aset"
+                                        value="{{ old('penanggung_jawab_aset', $selectedAsset->penanggung_jawab ?? '') }}"
+                                        placeholder="Mengikuti penanggung jawab Maintenance"
                                         readonly
                                     >
+
+                                    <small class="text-muted">
+                                        Akan diperbarui mengikuti nama pelaksana Maintenance.
+                                    </small>
+                                </div>
+
+                                {{-- KONDISI ASET --}}
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        Kondisi Aset
+                                        <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select
+                                        name="kondisi_aset_baru"
+                                        id="kondisi_aset_baru"
+                                        class="form-select"
+                                        required
+                                    >
+                                        <option value="">-- Pilih Kondisi --</option>
+
+                                        <option
+                                            value="Baik"
+                                            {{ old('kondisi_aset_baru', $selectedAsset->kondisi ?? '') == 'Baik' ? 'selected' : '' }}
+                                        >
+                                            Baik
+                                        </option>
+
+                                        <option
+                                            value="Rusak Ringan"
+                                            {{ old('kondisi_aset_baru', $selectedAsset->kondisi ?? '') == 'Rusak Ringan' ? 'selected' : '' }}
+                                        >
+                                            Rusak Ringan
+                                        </option>
+
+                                        <option
+                                            value="Rusak Berat"
+                                            {{ old('kondisi_aset_baru', $selectedAsset->kondisi ?? '') == 'Rusak Berat' ? 'selected' : '' }}
+                                        >
+                                            Rusak Berat
+                                        </option>
+                                    </select>
+                                </div>
+
+                                {{-- KETERANGAN ASET --}}
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">
+                                        Keterangan Aset
+                                    </label>
+
+                                    <textarea
+                                        name="keterangan_aset_baru"
+                                        id="keterangan_aset_baru"
+                                        class="form-control"
+                                        rows="3"
+                                        placeholder="Keterangan kondisi aset terbaru"
+                                    >{{ old('keterangan_aset_baru', $selectedAsset->keterangan ?? '') }}</textarea>
                                 </div>
 
                             </div>
@@ -191,33 +247,48 @@
                     <input
                         type="text"
                         name="penanggung_jawab"
+                        id="penanggung_jawab"
                         class="form-control"
                         value="{{ old('penanggung_jawab') }}"
-                        placeholder="Nama teknisi / penanggung jawab"
+                        placeholder="Nama teknisi / pelaksana Maintenance"
                     >
+
+                    <small class="text-muted">
+                        Nama ini akan menjadi Penanggung Jawab terbaru pada Informasi Aset.
+                    </small>
                 </div>
 
-                {{-- STATUS --}}
+                {{-- STATUS MAINTENANCE --}}
                 <div class="col-md-6 mb-3">
                     <label class="form-label">
                         Status <span class="text-danger">*</span>
                     </label>
 
-                    <select name="status" class="form-select" required>
+                    <select
+                        name="status"
+                        class="form-select"
+                        required
+                    >
                         <option value="">-- Pilih Status --</option>
 
-                        <option value="Terjadwal"
-                            {{ old('status') == 'Terjadwal' ? 'selected' : '' }}>
+                        <option
+                            value="Terjadwal"
+                            {{ old('status') == 'Terjadwal' ? 'selected' : '' }}
+                        >
                             Terjadwal
                         </option>
 
-                        <option value="Proses"
-                            {{ old('status') == 'Proses' ? 'selected' : '' }}>
+                        <option
+                            value="Proses"
+                            {{ old('status') == 'Proses' ? 'selected' : '' }}
+                        >
                             Proses
                         </option>
 
-                        <option value="Selesai"
-                            {{ old('status') == 'Selesai' ? 'selected' : '' }}>
+                        <option
+                            value="Selesai"
+                            {{ old('status') == 'Selesai' ? 'selected' : '' }}
+                        >
                             Selesai
                         </option>
                     </select>
@@ -237,15 +308,17 @@
                     >
                 </div>
 
-                {{-- KETERANGAN --}}
+                {{-- KETERANGAN PEKERJAAN MAINTENANCE --}}
                 <div class="col-12 mb-3">
-                    <label class="form-label">Keterangan</label>
+                    <label class="form-label">
+                        Keterangan Pekerjaan Maintenance
+                    </label>
 
                     <textarea
                         name="keterangan"
                         class="form-control"
                         rows="4"
-                        placeholder="Keterangan maintenance..."
+                        placeholder="Contoh: Penggantian keyboard, pembersihan perangkat, dan pengecekan sistem..."
                     >{{ old('keterangan') }}</textarea>
                 </div>
 
@@ -264,12 +337,18 @@
                     >
 
                     <small class="text-muted">
-                        Format JPG, JPEG, PNG, WEBP, atau PDF; maksimal 5 MB.
+                        Format JPG, JPEG, PNG, WEBP, atau PDF.
+                        Maksimal 5 MB.
                     </small>
 
                     {{-- PREVIEW DOKUMENTASI --}}
-                    <div id="preview-dokumen" class="mt-3" style="display:none;">
+                    <div
+                        id="preview-dokumen"
+                        class="mt-3"
+                        style="display:none;"
+                    >
                         <div class="border rounded p-3">
+
                             <strong class="d-block mb-2">
                                 Preview Dokumentasi:
                             </strong>
@@ -283,8 +362,10 @@
                             >
 
                             <div id="preview-pdf" style="display:none;">
-                                File PDF: <span id="nama-pdf"></span>
+                                File PDF:
+                                <span id="nama-pdf"></span>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -302,12 +383,16 @@
                     Batal
                 </a>
 
-                <button type="submit" class="btn btn-dark">
+                <button
+                    type="submit"
+                    class="btn btn-dark"
+                >
                     Simpan Maintenance
                 </button>
             </div>
 
         </form>
+
     </div>
 </div>
 
@@ -317,37 +402,53 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // OTOMATIS MENGISI INFORMASI ASET
+    // ==========================================
+    // INFORMASI ASET OTOMATIS
+    // ==========================================
+
     const assetSelect = document.getElementById('asset_id');
 
     const lokasiAset = document.getElementById('lokasi_aset');
     const divisiAset = document.getElementById('divisi_aset');
-    const pjAset = document.getElementById('pj_aset');
 
-    function isiDataAset() {
+    const pjAset = document.getElementById('penanggung_jawab_aset');
+    const pjMaintenance = document.getElementById('penanggung_jawab');
 
-        const selectedOption =
-            assetSelect.options[assetSelect.selectedIndex];
+    const kondisiAset = document.getElementById('kondisi_aset_baru');
+    const keteranganAset = document.getElementById('keterangan_aset_baru');
 
-        if (!selectedOption || selectedOption.value === '') {
+    // Ketika pengguna memilih aset lain,
+    // tampilkan data awal dari aset yang dipilih.
+    assetSelect.addEventListener('change', function () {
+
+        const option = assetSelect.options[assetSelect.selectedIndex];
+
+        if (!option || !option.value) {
             lokasiAset.value = '';
             divisiAset.value = '';
             pjAset.value = '';
+            kondisiAset.value = '';
+            keteranganAset.value = '';
             return;
         }
 
-        lokasiAset.value = selectedOption.dataset.lokasi || '';
-        divisiAset.value = selectedOption.dataset.divisi || '';
-        pjAset.value = selectedOption.dataset.pj || '';
-    }
+        lokasiAset.value = option.dataset.lokasi || '';
+        divisiAset.value = option.dataset.divisi || '';
+        pjAset.value = option.dataset.pj || '';
+        kondisiAset.value = option.dataset.kondisi || '';
+        keteranganAset.value = option.dataset.keterangan || '';
+    });
 
-    assetSelect.addEventListener('change', isiDataAset);
+    // Preview nama Penanggung Jawab Aset
+    // mengikuti input Penanggung Jawab Maintenance.
+    pjMaintenance.addEventListener('input', function () {
+        pjAset.value = pjMaintenance.value;
+    });
 
-    // Jalankan ketika halaman pertama kali dibuka
-    isiDataAset();
-
-
+    // ==========================================
     // PREVIEW DOKUMENTASI
+    // ==========================================
+
     const inputDokumen = document.getElementById('dokumen');
     const previewDokumen = document.getElementById('preview-dokumen');
     const previewGambar = document.getElementById('preview-gambar');
@@ -366,18 +467,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!file) return;
 
-        // VALIDASI UKURAN MAKSIMAL 5 MB
+        // Validasi ukuran maksimal 5 MB
         if (file.size > 5 * 1024 * 1024) {
             alert('Ukuran file maksimal 5 MB.');
             this.value = '';
             return;
         }
 
-        // VALIDASI FORMAT FILE
+        // Validasi format
         const ekstensi = file.name.split('.').pop().toLowerCase();
 
         const formatDiizinkan = [
-            'jpg', 'jpeg', 'png', 'webp', 'pdf'
+            'jpg',
+            'jpeg',
+            'png',
+            'webp',
+            'pdf'
         ];
 
         if (!formatDiizinkan.includes(ekstensi)) {

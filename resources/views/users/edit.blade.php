@@ -45,31 +45,45 @@
                     type="text"
                     id="name"
                     name="name"
-                    class="form-control"
+                    class="form-control @error('name') is-invalid @enderror"
                     value="{{ old('name', $user->name) }}"
+                    maxlength="255"
                     required
                 >
+                @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="mb-3">
-                <label for="email" class="form-label fw-semibold">
-                    Alamat Email
+                <label for="username" class="form-label fw-semibold">
+                    Username
                 </label>
                 <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    class="form-control"
-                    value="{{ old('email', $user->email) }}"
+                    type="text"
+                    id="username"
+                    name="username"
+                    class="form-control @error('username') is-invalid @enderror"
+                    value="{{ old('username', $user->username) }}"
+                    maxlength="255"
+                    autocomplete="username"
                     required
                 >
+                @error('username')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="mb-3">
                 <label for="role" class="form-label fw-semibold">
                     Role Pengguna
                 </label>
-                <select id="role" name="role" class="form-select" required>
+                <select
+                    id="role"
+                    name="role"
+                    class="form-select @error('role') is-invalid @enderror"
+                    required
+                >
                     <option value="admin" @selected(old('role', $user->role) === 'admin')>
                         Admin
                     </option>
@@ -80,6 +94,9 @@
                         Pimpinan
                     </option>
                 </select>
+                @error('role')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="mb-3">
@@ -90,13 +107,30 @@
                     type="password"
                     id="password"
                     name="password"
-                    class="form-control"
+                    class="form-control @error('password') is-invalid @enderror"
                     minlength="8"
                     autocomplete="new-password"
                 >
                 <small class="text-muted">
                     Kosongkan jika tidak ingin mengubah password.
                 </small>
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label for="password_confirmation" class="form-label fw-semibold">
+                    Konfirmasi Password Baru
+                </label>
+                <input
+                    type="password"
+                    id="password_confirmation"
+                    name="password_confirmation"
+                    class="form-control"
+                    minlength="8"
+                    autocomplete="new-password"
+                >
             </div>
 
             <div class="d-flex justify-content-end gap-2 mt-4">

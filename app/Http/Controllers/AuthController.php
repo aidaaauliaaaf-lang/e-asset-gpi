@@ -20,17 +20,20 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        // Cari akun berdasarkan kolom user
-        $user = User::where('user', trim($credentials['user']))->first();
+        $user = User::where(
+            'user',
+            trim($credentials['user'])
+        )->first();
 
-        // Periksa username dan password
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+        if (
+            !$user ||
+            !Hash::check($credentials['password'], $user->password)
+        ) {
             return back()
                 ->withInput($request->only('user'))
                 ->with('error', 'Username atau password salah.');
         }
 
-        // Periksa role
         $role = strtolower(trim($user->role));
 
         if (!in_array($role, ['admin', 'pimpinan', 'karyawan'], true)) {
@@ -40,10 +43,8 @@ class AuthController extends Controller
             );
         }
 
-        // Regenerasi session
         $request->session()->regenerate();
 
-        // Simpan session pengguna
         $request->session()->put([
             'user_id' => $user->id,
             'user_name' => $user->name,

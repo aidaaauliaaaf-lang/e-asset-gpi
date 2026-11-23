@@ -1,4 +1,3 @@
-```php
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -520,7 +519,7 @@
                         <tr>
                             <th>No.</th>
                             <th>Nama Pengguna</th>
-                            <th>Email</th>
+                            <th>Username</th>
                             <th>Role</th>
                             <th>Tanggal Dibuat</th>
                             <th>Aksi</th>
@@ -538,7 +537,7 @@
                                     <div class="user-name">{{ $user->name }}</div>
                                 </td>
 
-                                <td class="email">{{ $user->email }}</td>
+                                <td class="email">{{ $user->username }}</td>
 
                                 <td>
                                     <span class="role role-{{ $user->role }}">
@@ -578,4 +577,3 @@
 </main>
 </body>
 </html>
-```

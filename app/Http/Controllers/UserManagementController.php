@@ -14,6 +14,7 @@ class UserManagementController extends Controller
     public function index()
     {
         $users = User::latest()->paginate(10);
+
         return view('users.index', compact('users'));
     }
 
@@ -26,14 +27,31 @@ class UserManagementController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', Rule::in(self::ROLES)],
+
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:users,user',
+            ],
+
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+            ],
+
+            'role' => [
+                'required',
+                Rule::in(self::ROLES),
+            ],
         ]);
 
         User::create([
             'name' => $validated['name'],
-            'email' => $validated['email'],
+            'user' => $validated['username'],
+            'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
         ]);
@@ -51,12 +69,25 @@ class UserManagementController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required', 'email', 'max:255',
-                Rule::unique('users', 'email')->ignore($user->id),
+
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'user')->ignore($user->id),
             ],
-            'role' => ['required', Rule::in(self::ROLES)],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+
+            'role' => [
+                'required',
+                Rule::in(self::ROLES),
+            ],
+
+            'password' => [
+                'nullable',
+                'string',
+                'min:8',
+                'confirmed',
+            ],
         ]);
 
         if (
@@ -69,7 +100,8 @@ class UserManagementController extends Controller
         }
 
         $user->name = $validated['name'];
-        $user->email = $validated['email'];
+        $user->user = $validated['username'];
+        $user->username = $validated['username'];
         $user->role = $validated['role'];
 
         if (!empty($validated['password'])) {

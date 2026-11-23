@@ -511,13 +511,13 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="email" class="form-label">Alamat Email</label>
-                        <input id="email" type="email" name="email"
-                               class="form-control @error('email') is-invalid @enderror"
-                               value="{{ old('email') }}"
-                               placeholder="nama@goldenpiping.co.id"
-                               maxlength="255" autocomplete="email" required>
-                        @error('email')
+                        <label for="username" class="form-label">Username</label>
+                        <input id="username" type="text" name="username"
+                               class="form-control @error('username') is-invalid @enderror"
+                               value="{{ old('username') }}"
+                               placeholder="Masukkan username"
+                               maxlength="255" autocomplete="username" required>
+                        @error('username')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
