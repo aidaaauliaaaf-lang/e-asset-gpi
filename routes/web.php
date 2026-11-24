@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\AssetController;
@@ -41,11 +42,18 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 
+    // LOGOUT
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
 
+    // DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    // ==================================================
+    // PROFIL PENGGUNA
+    // ADMIN, PIMPINAN, KARYAWAN
+    // ==================================================
 
     Route::get('/profile', [ProfileController::class, 'show'])
         ->name('profile.show');
@@ -132,9 +140,7 @@ Route::middleware('role:admin,pimpinan')->group(function () {
 
 });
 
-// INPUT MUTASI
-// HANYA ADMIN
-// INPUT DILAKUKAN MELALUI DETAIL ASET HASIL SCAN QR
+// INPUT MUTASI - HANYA ADMIN
 
 Route::middleware('role:admin')->group(function () {
 
@@ -158,9 +164,7 @@ Route::middleware('role:admin,pimpinan,karyawan')->group(function () {
 
 });
 
-// INPUT MAINTENANCE
-// ADMIN DAN KARYAWAN
-// FORM HANYA DAPAT DIAKSES SETELAH SCAN QR
+// INPUT MAINTENANCE - ADMIN DAN KARYAWAN
 
 Route::middleware('role:admin,karyawan')->group(function () {
 
@@ -182,8 +186,6 @@ Route::middleware('role:admin,pimpinan')->group(function () {
     Route::get('/laporan', [ReportController::class, 'index'])
         ->name('reports.index');
 
-    // PDF ASET, MUTASI, DAN MAINTENANCE
-
     Route::get('/laporan/{jenis}/pdf', [ReportController::class, 'downloadPdf'])
         ->whereIn('jenis', ['aset', 'mutasi', 'pemeliharaan'])
         ->name('reports.pdf');
@@ -197,15 +199,18 @@ Route::middleware('role:admin,pimpinan')->group(function () {
 
 Route::middleware('role:admin')->group(function () {
 
+    // DAFTAR PENGGUNA
     Route::get('/users', [UserManagementController::class, 'index'])
         ->name('users.index');
 
+    // TAMBAH PENGGUNA
     Route::get('/users/create', [UserManagementController::class, 'create'])
         ->name('users.create');
 
     Route::post('/users', [UserManagementController::class, 'store'])
         ->name('users.store');
 
+    // EDIT PENGGUNA
     Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])
         ->name('users.edit');
 

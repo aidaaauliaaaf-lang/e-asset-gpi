@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -301,11 +302,11 @@
 
 </div>
 
-{{-- PAGINATION --}}
+{{-- PAGINATION BOOTSTRAP 5 --}}
 @if($maintenances->hasPages())
 
     <div class="mt-4">
-        {{ $maintenances->links() }}
+        {{ $maintenances->withQueryString()->links('pagination::bootstrap-5') }}
     </div>
 
 @endif

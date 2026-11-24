@@ -470,7 +470,13 @@
    href="{{ route('profile.show') }}">
     <i class="bi bi-person-circle"></i>
     <span class="menu-text">
-        {{ $isPimpinan ? 'Profil Pimpinan' : 'Profil Karyawan' }}
+        @if($isAdmin)
+            Profil Admin
+        @elseif($isPimpinan)
+            Profil Pimpinan
+        @else
+            Profil Karyawan
+        @endif
     </span>
 </a>
 
